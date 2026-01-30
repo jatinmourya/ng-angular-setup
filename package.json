@@ -1,21 +1,56 @@
 {
-  "name": "autoprojectcreate11",
+  "name": "ng-angular-setup",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
+  "description": "A comprehensive CLI tool to automate Angular project initialization with intelligent version management and prerequisite handling",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
   },
   "type": "module",
   "bin": {
-    "ng-init": "./src/index.js"
+    "ng-angular-setup": "./src/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "angular",
+    "cli",
+    "automation",
+    "project-generator",
+    "angular-cli",
+    "scaffolding",
+    "nvm",
+    "node-version",
+    "npm",
+    "interactive",
+    "project-setup",
+    "boilerplate",
+    "template",
+    "angular-project",
+    "development-tools"
+  ],
+  "author": "Angular Project Automator Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/angular-project-automator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/angular-project-automator/issues"
+  },
+  "homepage": "https://github.com/your-username/angular-project-automator#readme",
   "dependencies": {
     "@inquirer/prompts": "^7.10.1",
+    "axios": "^1.6.5",
+    "chalk": "^5.3.0",
     "commander": "^13.1.0",
-    "execa": "^9.6.1"
+    "execa": "^9.6.1",
+    "inquirer": "^9.2.12",
+    "inquirer-autocomplete-prompt": "^3.0.1",
+    "lodash.debounce": "^4.0.8",
+    "ora": "^8.0.1",
+    "semver": "^7.5.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
