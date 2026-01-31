@@ -30,15 +30,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile management system (save, load, export, import configurations)
 
 #### CLI Commands
-- `ng-angular-setup` - Main interactive project creation
-- `ng-angular-setup create` - Alias for main command
-- `ng-angular-setup check` - System version check
-- `ng-angular-setup profile list` - List saved profiles
-- `ng-angular-setup profile show <name>` - Show profile details
-- `ng-angular-setup profile delete <name>` - Delete a profile
-- `ng-angular-setup profile export <name> <output>` - Export profile to file
-- `ng-angular-setup profile import <file>` - Import profile from file
-- `ng-angular-setup examples` - Show usage examples
+- `ng-init` - Main interactive project creation
+- `ng-init create` - Alias for main command
+- `ng-init check` - System version check
+- `ng-init profile list` - List saved profiles
+- `ng-init profile show <name>` - Show profile details
+- `ng-init profile delete <name>` - Delete a profile
+- `ng-init profile export <name> <output>` - Export profile to file
+- `ng-init profile import <file>` - Import profile from file
+- `ng-init examples` - Show usage examples
 
 #### Utility Modules
 - Version checker for system components
@@ -126,4 +126,4 @@ The tool automates the entire project setup process, from checking system prereq
 
 ---
 
-[1.0.0]: https://github.com/your-username/ng-angular-setup/releases/tag/v1.0.0
+[1.0.0]: https://github.com/jatinmourya/ng-init/releases/tag/v1.0.0

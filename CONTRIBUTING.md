@@ -28,8 +28,8 @@ We welcome feature suggestions! Please create an issue with:
 
 1. **Fork the Repository**
    ```bash
-   git clone https://github.com/your-username/angular-project-automator.git
-   cd angular-project-automator
+   git clone https://github.com/jatinmourya/ng-init.git
+   cd ng-init
    ```
 
 2. **Create a Branch**
@@ -46,7 +46,7 @@ We welcome feature suggestions! Please create an issue with:
 4. **Test Your Changes**
    ```bash
    npm link
-   ng-auto
+   ng-init
    ```
 
 5. **Commit Your Changes**
@@ -115,14 +115,14 @@ Before submitting a PR:
 
 1. Test the main flow:
    ```bash
-   ng-auto
+   ng-init
    ```
 
 2. Test all commands:
    ```bash
-   ng-auto check
-   ng-auto profile list
-   ng-auto examples
+   ng-init check
+   ng-init profile list
+   ng-init examples
    ```
 
 3. Test edge cases:
@@ -158,8 +158,8 @@ Before submitting a PR:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/angular-project-automator.git
-   cd angular-project-automator
+   git clone https://github.com/jatinmourya/ng-init.git
+   cd ng-init
    ```
 
 2. **Install dependencies**
@@ -174,12 +174,12 @@ Before submitting a PR:
 
 4. **Test the CLI**
    ```bash
-   ng-auto
+   ng-init
    ```
 
 5. **Unlink when done**
    ```bash
-   npm unlink -g angular-project-automator
+   npm unlink -g ng-init
    ```
 
 ## 🐛 Debugging

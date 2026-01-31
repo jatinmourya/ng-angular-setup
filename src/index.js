@@ -8,7 +8,7 @@ import chalk from 'chalk';
 const program = new Command();
 
 program
-    .name('ng-angular-setup')
+    .name('ng-init')
     .description('Angular project initializer with intelligent version management and automation')
     .version('1.0.0');
 
@@ -121,25 +121,25 @@ program
         console.log(chalk.bold.cyan('\n📚 Usage Examples:\n'));
         console.log(chalk.gray('━'.repeat(50)));
         console.log(chalk.white('Create new project (interactive):'));
-        console.log(chalk.green('  $ ng-angular-setup') + chalk.gray(' or ') + chalk.green('ng-angular-setup create\n'));
+        console.log(chalk.green('  $ ng-init') + chalk.gray(' or ') + chalk.green('ng-init create\n'));
         
         console.log(chalk.white('Check system versions:'));
-        console.log(chalk.green('  $ ng-angular-setup check\n'));
+        console.log(chalk.green('  $ ng-init check\n'));
         
         console.log(chalk.white('List saved profiles:'));
-        console.log(chalk.green('  $ ng-angular-setup profile list\n'));
+        console.log(chalk.green('  $ ng-init profile list\n'));
         
         console.log(chalk.white('Show profile details:'));
-        console.log(chalk.green('  $ ng-angular-setup profile show my-profile\n'));
+        console.log(chalk.green('  $ ng-init profile show my-profile\n'));
         
         console.log(chalk.white('Delete a profile:'));
-        console.log(chalk.green('  $ ng-angular-setup profile delete my-profile\n'));
+        console.log(chalk.green('  $ ng-init profile delete my-profile\n'));
         
         console.log(chalk.white('Export a profile:'));
-        console.log(chalk.green('  $ ng-angular-setup profile export my-profile ./profile.json\n'));
+        console.log(chalk.green('  $ ng-init profile export my-profile ./profile.json\n'));
         
         console.log(chalk.white('Import a profile:'));
-        console.log(chalk.green('  $ ng-angular-setup profile import ./profile.json\n'));
+        console.log(chalk.green('  $ ng-init profile import ./profile.json\n'));
         
         console.log(chalk.gray('━'.repeat(50)) + '\n');
     });

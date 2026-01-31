@@ -319,18 +319,18 @@ End
 
 ### Installation
 ```bash
-npm install -g angular-project-automator
+npm install -g ng-init
 # or
-yarn global add angular-project-automator
+yarn global add ng-init
 ```
 
 ### Usage
 ```bash
 # Start the CLI
-ng-auto
+ng-init
 
 # With flags (future enhancement)
-ng-auto --template=enterprise --version=17.0.0
+ng-init --template=enterprise --version=17.0.0
 ```
 
 ---

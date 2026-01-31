@@ -34,4 +34,4 @@ coverage/
 .nyc_output/
 
 # Profiles (user-specific)
-.angular-automator/
+.ng-init/

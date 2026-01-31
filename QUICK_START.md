@@ -7,13 +7,13 @@ Get started with Angular Project Automator in minutes!
 ### Option 1: Global Installation (Recommended)
 
 ```bash
-npm install -g ng-angular-setup
+npm install -g ng-init
 ```
 
 ### Option 2: Use with npx (No installation needed)
 
 ```bash
-npx ng-angular-setup
+npx ng-init
 ```
 
 ## 🚀 Create Your First Project
@@ -21,7 +21,7 @@ npx ng-angular-setup
 ### Step 1: Run the CLI
 
 ```bash
-ng-angular-setup
+ng-init
 ```
 
 ### Step 2: Follow the Interactive Prompts
@@ -51,7 +51,7 @@ Open [http://localhost:4200](http://localhost:4200) in your browser!
 ### Use Case 1: Enterprise Project with NgRx and Material
 
 ```bash
-ng-angular-setup
+ng-init
 # Select Angular 17
 # Choose "Enterprise" template
 # Add any additional libraries
@@ -62,7 +62,7 @@ ng-angular-setup
 ### Use Case 2: Quick PWA Setup
 
 ```bash
-ng-angular-setup
+ng-init
 # Select latest Angular
 # Choose "PWA Ready" template
 # Skip additional libraries
@@ -72,7 +72,7 @@ ng-angular-setup
 ### Use Case 3: Reuse Saved Profile
 
 ```bash
-ng-angular-setup
+ng-init
 # Say "Yes" to use saved profile
 # Select your profile
 # Confirm and create
@@ -93,25 +93,25 @@ ng-angular-setup
 
 ```bash
 # Create new project
-ng-angular-setup
+ng-init
 
 # Check system versions
-ng-angular-setup check
+ng-init check
 
 # List saved profiles
-ng-angular-setup profile list
+ng-init profile list
 
 # Show profile details
-ng-angular-setup profile show my-profile
+ng-init profile show my-profile
 
 # Export profile
-ng-angular-setup profile export my-profile ./profile.json
+ng-init profile export my-profile ./profile.json
 
 # Import profile
-ng-angular-setup profile import ./profile.json
+ng-init profile import ./profile.json
 
 # Show examples
-ng-angular-setup examples
+ng-init examples
 ```
 
 ## 📚 What Gets Created?
@@ -173,7 +173,7 @@ The CLI uses `npx @angular/cli` so you don't need Angular CLI globally installed
 
 ### "Permission denied" (Linux/macOS)
 ```bash
-sudo npm install -g ng-angular-setup
+sudo npm install -g ng-init
 ```
 
 ## 💡 Pro Tips
@@ -244,7 +244,7 @@ After creating your project:
 ## 🆘 Need Help?
 
 - GitHub Issues: Report bugs or request features
-- Examples: Run `ng-angular-setup examples`
+- Examples: Run `ng-init examples`
 - Documentation: Check README.md
 
 ---

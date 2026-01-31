@@ -192,7 +192,7 @@ A comprehensive CLI application that automates Angular project initialization wi
 ## 📁 Project Structure
 
 ```
-ng-angular-setup/
+ng-init/
 ├── src/
 │   ├── index.js                      # CLI entry point with commands
 │   ├── runner.js                     # Main CLI flow orchestration
@@ -219,19 +219,19 @@ ng-angular-setup/
 ## 🎯 CLI Commands
 
 ### Main Commands
-- `ng-angular-setup` - Create new Angular project (interactive)
-- `ng-angular-setup create` - Alias for main command
-- `ng-angular-setup check` - System version check
+- `ng-init` - Create new Angular project (interactive)
+- `ng-init create` - Alias for main command
+- `ng-init check` - System version check
 
 ### Profile Commands
-- `ng-angular-setup profile list` - List all saved profiles
-- `ng-angular-setup profile show <name>` - Show profile details
-- `ng-angular-setup profile delete <name>` - Delete a profile
-- `ng-angular-setup profile export <name> <output>` - Export profile
-- `ng-angular-setup profile import <file>` - Import profile
+- `ng-init profile list` - List all saved profiles
+- `ng-init profile show <name>` - Show profile details
+- `ng-init profile delete <name>` - Delete a profile
+- `ng-init profile export <name> <output>` - Export profile
+- `ng-init profile import <file>` - Import profile
 
 ### Utility Commands
-- `ng-angular-setup examples` - Show usage examples
+- `ng-init examples` - Show usage examples
 
 ## 📦 Dependencies
 
@@ -337,13 +337,13 @@ ng-angular-setup/
 
 ### Global Installation
 ```bash
-npm install -g ng-angular-setup
-ng-angular-setup
+npm install -g ng-init
+ng-init
 ```
 
 ### With npx
 ```bash
-npx ng-angular-setup
+npx ng-init
 ```
 
 ## ✨ Features Not in Original Spec (Bonus)

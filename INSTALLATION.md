@@ -19,15 +19,15 @@ Before installing, ensure you have:
 
 ### Method 1: Global Installation (Recommended)
 
-Install the package globally to use `ng-angular-setup` command anywhere:
+Install the package globally to use `ng-init` command anywhere:
 
 ```bash
-npm install -g ng-angular-setup
+npm install -g ng-init
 ```
 
 Verify installation:
 ```bash
-ng-angular-setup --version
+ng-init --version
 ```
 
 ### Method 2: Using npx (No Installation)
@@ -35,7 +35,7 @@ ng-angular-setup --version
 Run without installing:
 
 ```bash
-npx ng-angular-setup
+npx ng-init
 ```
 
 This downloads and runs the latest version temporarily.
@@ -46,8 +46,8 @@ For development or testing:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/ng-angular-setup.git
-cd ng-angular-setup
+git clone https://github.com/jatinmourya/ng-init.git
+cd ng-init
 
 # Install dependencies
 npm install
@@ -55,11 +55,11 @@ npm install
 # Link globally for testing
 npm link
 
-# Now you can use ng-angular-setup command
-ng-angular-setup
+# Now you can use ng-init command
+ng-init
 
 # Unlink when done
-npm unlink -g ng-angular-setup
+npm unlink -g ng-init
 ```
 
 ## 🔧 Platform-Specific Setup
@@ -89,7 +89,7 @@ nvm version
 
 #### Install Angular Project Automator
 ```bash
-npm install -g ng-angular-setup
+npm install -g ng-init
 ```
 
 ### macOS
@@ -111,7 +111,7 @@ npm install -g ng-angular-setup
 
 #### Install Angular Project Automator
 ```bash
-npm install -g ng-angular-setup
+npm install -g ng-init
 ```
 
 ### Linux
@@ -139,9 +139,9 @@ nvm install --lts
 
 #### Install Angular Project Automator
 ```bash
-npm install -g ng-angular-setup
+npm install -g ng-init
 # or with sudo if needed
-sudo npm install -g ng-angular-setup
+sudo npm install -g ng-init
 ```
 
 ## ✅ Verify Installation
@@ -152,15 +152,15 @@ node --version   # Should be v18.0.0 or higher
 npm --version    # Should be v9.0.0 or higher
 ```
 
-### Check ng-angular-setup
+### Check ng-init
 ```bash
-ng-angular-setup --version
-ng-angular-setup check     # Shows all system versions
+ng-init --version
+ng-init check     # Shows all system versions
 ```
 
 ## 🔍 Troubleshooting Installation
 
-### Issue: "command not found: ng-angular-setup"
+### Issue: "command not found: ng-init"
 
 **Solution 1**: Check npm global bin path
 ```bash
@@ -171,14 +171,14 @@ Ensure this path is in your system PATH.
 
 **Solution 2**: Use npx instead
 ```bash
-npx ng-angular-setup
+npx ng-init
 ```
 
 ### Issue: Permission denied (Linux/macOS)
 
 **Solution 1**: Use sudo
 ```bash
-sudo npm install -g ng-angular-setup
+sudo npm install -g ng-init
 ```
 
 **Solution 2**: Fix npm permissions (recommended)
@@ -187,7 +187,7 @@ mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
 echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
-npm install -g ng-angular-setup
+npm install -g ng-init
 ```
 
 ### Issue: Node version too old
@@ -206,12 +206,12 @@ nvm use --lts
 **Solution 1**: Clear npm cache
 ```bash
 npm cache clean --force
-npm install -g ng-angular-setup
+npm install -g ng-init
 ```
 
 **Solution 2**: Use different registry
 ```bash
-npm install -g ng-angular-setup --registry https://registry.npmjs.org/
+npm install -g ng-init --registry https://registry.npmjs.org/
 ```
 
 ### Issue: Windows long path errors
@@ -226,35 +226,35 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name
 
 ### Update to Latest Version
 ```bash
-npm update -g ng-angular-setup
+npm update -g ng-init
 ```
 
 ### Check Current Version
 ```bash
-ng-angular-setup --version
+ng-init --version
 ```
 
 ### Check for Updates
 ```bash
-npm outdated -g ng-angular-setup
+npm outdated -g ng-init
 ```
 
 ## 🗑️ Uninstallation
 
 ### Remove Global Package
 ```bash
-npm uninstall -g ng-angular-setup
+npm uninstall -g ng-init
 ```
 
 ### Remove Saved Profiles (Optional)
-Profiles are saved in `~/.angular-automator/`
+Profiles are saved in `~/.ng-init/`
 
 ```bash
 # Windows
-rmdir /s %USERPROFILE%\.angular-automator
+rmdir /s %USERPROFILE%\.ng-init
 
 # macOS/Linux
-rm -rf ~/.angular-automator
+rm -rf ~/.ng-init
 ```
 
 ## ⚙️ Configuration
@@ -275,15 +275,15 @@ export HTTPS_PROXY=http://proxy.company.com:8080
 ### Profile Location
 
 Profiles are stored at:
-- **Windows**: `C:\Users\<username>\.angular-automator\profiles.json`
-- **macOS/Linux**: `~/.angular-automator/profiles.json`
+- **Windows**: `C:\Users\<username>\.ng-init\profiles.json`
+- **macOS/Linux**: `~/.ng-init/profiles.json`
 
 ## 🎯 First Run
 
 After installation, run:
 
 ```bash
-ng-angular-setup check
+ng-init check
 ```
 
 This verifies:
@@ -295,23 +295,23 @@ This verifies:
 Then create your first project:
 
 ```bash
-ng-angular-setup
+ng-init
 ```
 
 ## 📚 Next Steps
 
 1. Read [QUICK_START.md](./QUICK_START.md) for quick start guide
 2. Read [README.md](./README.md) for full documentation
-3. Run `ng-angular-setup examples` for usage examples
+3. Run `ng-init examples` for usage examples
 4. Create your first Angular project!
 
 ## 🆘 Getting Help
 
 If you encounter issues:
 
-1. Run `ng-angular-setup check` to diagnose system
+1. Run `ng-init check` to diagnose system
 2. Check [Troubleshooting](#troubleshooting-installation) section
-3. Review [GitHub Issues](https://github.com/your-username/ng-angular-setup/issues)
+3. Review [GitHub Issues](https://github.com/jatinmourya/ng-init/issues)
 4. Create new issue with:
    - Operating system
    - Node.js version
@@ -336,13 +336,13 @@ If you encounter issues:
 
 **Bash**:
 ```bash
-ng-angular-setup --completion >> ~/.bashrc
+ng-init --completion >> ~/.bashrc
 source ~/.bashrc
 ```
 
 **Zsh**:
 ```bash
-ng-angular-setup --completion >> ~/.zshrc
+ng-init --completion >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -350,23 +350,23 @@ source ~/.zshrc
 
 Add to your shell config:
 ```bash
-alias nga='ng-angular-setup'
-alias ngac='ng-angular-setup check'
-alias ngap='ng-angular-setup profile list'
+alias nga='ng-init'
+alias ngac='ng-init check'
+alias ngap='ng-init profile list'
 ```
 
 ### Set Default Profile
 
 Create a default profile for quick project creation:
 ```bash
-ng-angular-setup
+ng-init
 # Configure your preferred settings
 # Save as "default" profile
 ```
 
 Next time:
 ```bash
-ng-angular-setup
+ng-init
 # Select "default" profile
 ```
 

@@ -1,5 +1,5 @@
 {
-  "name": "ng-angular-setup",
+  "name": "ng-init",
   "version": "1.0.0",
   "main": "src/index.js",
   "description": "A comprehensive CLI tool to automate Angular project initialization with intelligent version management and prerequisite handling",
@@ -9,7 +9,7 @@
   },
   "type": "module",
   "bin": {
-    "ng-angular-setup": "./src/index.js"
+    "ng-init": "./src/index.js"
   },
   "keywords": [
     "angular",
@@ -28,16 +28,16 @@
     "angular-project",
     "development-tools"
   ],
-  "author": "Angular Project Automator Contributors",
+  "author": "jatinmourya",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/angular-project-automator.git"
+    "url": "https://github.com/jatinmourya/ng-init.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/angular-project-automator/issues"
+    "url": "https://github.com/jatinmourya/ng-init/issues"
   },
-  "homepage": "https://github.com/your-username/angular-project-automator#readme",
+  "homepage": "https://github.com/jatinmourya/ng-init#readme",
   "dependencies": {
     "@inquirer/prompts": "^7.10.1",
     "axios": "^1.6.5",

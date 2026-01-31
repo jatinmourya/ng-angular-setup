@@ -2,7 +2,7 @@
 
 A comprehensive command-line interface (CLI) tool designed to automate and streamline the initialization of Angular projects with intelligent version management, interactive library search, and comprehensive prerequisite handling.
 
-[![npm version](https://img.shields.io/npm/v/ng-angular-setup.svg)](https://www.npmjs.com/package/ng-angular-setup)
+[![npm version](https://img.shields.io/npm/v/ng-init.svg)](https://www.npmjs.com/package/ng-init)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## ✨ Features
@@ -86,13 +86,13 @@ A comprehensive command-line interface (CLI) tool designed to automate and strea
 ### Global Installation (Recommended)
 
 ```bash
-npm install -g ng-angular-setup
+npm install -g ng-init
 ```
 
 ### Or use with npx (no installation)
 
 ```bash
-npx ng-angular-setup
+npx ng-init
 ```
 
 ## 📖 Usage
@@ -100,13 +100,13 @@ npx ng-angular-setup
 ### Create New Project (Interactive)
 
 ```bash
-ng-angular-setup
+ng-init
 ```
 
 or
 
 ```bash
-ng-angular-setup create
+ng-init create
 ```
 
 This starts the interactive CLI that guides you through:
@@ -122,7 +122,7 @@ This starts the interactive CLI that guides you through:
 ### Check System Versions
 
 ```bash
-ng-angular-setup check
+ng-init check
 ```
 
 Displays current versions of Node.js, npm, nvm, and Angular CLI.
@@ -132,54 +132,54 @@ Displays current versions of Node.js, npm, nvm, and Angular CLI.
 #### List all saved profiles
 
 ```bash
-ng-angular-setup profile list
+ng-init profile list
 ```
 
 #### Show profile details
 
 ```bash
-ng-angular-setup profile show <profile-name>
+ng-init profile show <profile-name>
 ```
 
 #### Delete a profile
 
 ```bash
-ng-angular-setup profile delete <profile-name>
+ng-init profile delete <profile-name>
 ```
 
 #### Export a profile
 
 ```bash
-ng-angular-setup profile export <profile-name> <output-file>
+ng-init profile export <profile-name> <output-file>
 ```
 
 Example:
 ```bash
-ng-angular-setup profile export my-enterprise-setup ./enterprise-profile.json
+ng-init profile export my-enterprise-setup ./enterprise-profile.json
 ```
 
 #### Import a profile
 
 ```bash
-ng-angular-setup profile import <profile-file>
+ng-init profile import <profile-file>
 ```
 
 Example:
 ```bash
-ng-angular-setup profile import ./enterprise-profile.json
+ng-init profile import ./enterprise-profile.json
 ```
 
 ### Show Usage Examples
 
 ```bash
-ng-angular-setup examples
+ng-init examples
 ```
 
 ## 🎯 Usage Examples
 
 ### Example 1: Create Enterprise Project with Material
 
-1. Run `ng-angular-setup`
+1. Run `ng-init`
 2. Select Angular version 17
 3. Choose "Enterprise" template
 4. Select "Interactive search" for libraries
@@ -190,7 +190,7 @@ ng-angular-setup examples
 
 ### Example 2: Quick Setup with Saved Profile
 
-1. Run `ng-angular-setup`
+1. Run `ng-init`
 2. Select "Yes" to use saved profile
 3. Choose your saved profile
 4. Confirm configuration
@@ -198,7 +198,7 @@ ng-angular-setup examples
 
 ### Example 3: PWA Project with Testing
 
-1. Run `ng-angular-setup`
+1. Run `ng-init`
 2. Select latest Angular version
 3. Choose "PWA Ready" template
 4. Select "Testing Bundle" from bundles
@@ -209,7 +209,7 @@ ng-angular-setup examples
 ## 🏗️ Project Structure
 
 ```
-ng-angular-setup/
+ng-init/
 ├── src/
 │   ├── commands/              # CLI command handlers
 │   ├── utils/                 # Helper functions
@@ -284,8 +284,7 @@ For detailed documentation, visit [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTA
 
 ## 📞 Support
 
-- GitHub Issues: [Report issues](https://github.com/your-username/ng-angular-setup/issues)
-- Email: support@angular-automator.com
+- GitHub Issues: [Report issues](https://github.com/jatinmourya/ng-init/issues)
 
 ## 🎉 Success Metrics
 

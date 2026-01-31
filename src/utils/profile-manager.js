@@ -3,7 +3,7 @@ import path from 'path';
 import { homedir } from 'os';
 import chalk from 'chalk';
 
-const PROFILES_DIR = path.join(homedir(), '.angular-automator');
+const PROFILES_DIR = path.join(homedir(), '.ng-init');
 const PROFILES_FILE = path.join(PROFILES_DIR, 'profiles.json');
 
 /**
