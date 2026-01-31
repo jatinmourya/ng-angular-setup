@@ -2,7 +2,7 @@
 
 ## 🎯 Project Overview
 
-A comprehensive CLI application that automates Angular project initialization with intelligent version management, interactive library search, and complete prerequisite handling. This implementation includes **ALL** features from the PROJECT_DOCUMENTATION.md file.
+A comprehensive CLI application (v1.1.0) that automates Angular project initialization with intelligent version management, dynamic library version resolution, interactive library search, and complete prerequisite handling. This implementation includes **ALL** features from the PROJECT_DOCUMENTATION.md file plus advanced dynamic compatibility features.
 
 ## ✅ Implemented Features
 
@@ -33,6 +33,9 @@ A comprehensive CLI application that automates Angular project initialization wi
   - Validates current Node.js against requirements
   - Displays compatibility status with visual indicators
   - Provides detailed error messages
+  - **NEW in v1.1.0**: Dynamic library version resolution
+  - **NEW in v1.1.0**: npm registry peer dependency checking
+  - **NEW in v1.1.0**: Package caching (5-minute TTL)
 
 #### 4. Smart Node Version Management ✓
 - **Location**: `src/utils/version-checker.js`
@@ -92,6 +95,18 @@ A comprehensive CLI application that automates Angular project initialization wi
   - Verified package badges
   - Multiple library queue
   - Version selection (latest or manual)
+
+#### 9.1. Dynamic Library Version Resolution ✓ (NEW in v1.1.0)
+- **Location**: `src/utils/compatibility.js`
+- **Features**:
+  - `resolveLibraryVersionsAsync()` - Resolves compatible versions for all libraries
+  - `findCompatibleLibraryVersion()` - Finds best compatible version from npm
+  - `isVersionCompatibleWithAngular()` - Checks peer dependencies against Angular version
+  - `getPackagePeerDependencies()` - Fetches peer deps from npm registry
+  - `getAllCompatibleVersions()` - Lists all compatible versions for a package
+  - Package response caching (5-minute TTL)
+  - Automatic major version matching for `@angular/*` and `@ngrx/*` packages
+  - Compatibility warnings for potentially incompatible versions
 
 #### 10. Popular Library Bundles ✓
 - **Location**: `src/templates/templates.js` - `LIBRARY_BUNDLES`
@@ -245,7 +260,11 @@ ng-init/
 - **inquirer-autocomplete-prompt** (^3.0.1) - Autocomplete
 - **lodash.debounce** (^4.0.8) - Search debouncing
 - **ora** (^8.0.1) - Spinners and progress
-- **semver** (^7.5.4) - Version comparison
+- **semver** (^7.5.4) - Version comparison and compatibility checking
+
+### Node.js Requirements
+- **Minimum**: Node.js v18.0.0
+- **Recommended**: Node.js v18.19.0 or v20.11.0 (LTS)
 
 ## 🔄 User Flow
 
@@ -307,12 +326,22 @@ ng-init/
 - Download statistics display
 - Version metadata
 - Debounced search for performance
+- **NEW**: Peer dependency fetching for compatibility
+- **NEW**: Response caching for performance
 
 ### Version Management
 - Automatic Node.js compatibility checking
 - Smart nvm integration
 - Multiple version resolution
 - Guided installation process
+- **NEW**: Dynamic library version resolution
+
+### Dynamic Library Compatibility (v1.1.0)
+- Automatically resolves compatible library versions for Angular
+- Checks peer dependencies from npm registry
+- Matches major versions for Angular-scoped packages
+- Displays adjusted versions and compatibility warnings
+- Uses semver for accurate version matching
 
 ### Template System
 - 6 pre-configured templates
@@ -356,6 +385,8 @@ npx @jatinmourya/ng-init
 6. **Progress Indicators** - Spinners with ora
 7. **Validation Functions** - Input validation everywhere
 8. **Multiple Export Formats** - Profile export/import
+9. **Dynamic Version Resolution** (v1.1.0) - Automatic library compatibility
+10. **npm Registry Caching** (v1.1.0) - Performance optimization
 
 ## 📊 Success Metrics
 
@@ -364,11 +395,12 @@ npx @jatinmourya/ng-init
 - 🚀 **Instant scaffolding** with templates
 - 💾 **Reusable profiles** for standardization
 - 📦 **Smart package management** with validation
+- 🔄 **Dynamic version resolution** for Angular compatibility
 
 ## 🎯 Implementation Status
 
 **Total Features from Documentation: 20+**
-**Implemented: 20+ (100%)**
+**Implemented: 21+ (100%+)**
 
 ✅ All core features implemented
 ✅ All advanced features implemented
@@ -377,6 +409,7 @@ npx @jatinmourya/ng-init
 ✅ CLI commands and utilities
 ✅ Error handling and validation
 ✅ User experience enhancements
+✅ Dynamic library version resolution (v1.1.0)
 
 ## 📝 Documentation
 
@@ -408,4 +441,4 @@ The tool is ready for:
 
 **Built with ❤️ following the complete PROJECT_DOCUMENTATION.md specification**
 
-Last Updated: January 30, 2026
+Last Updated: January 31, 2026

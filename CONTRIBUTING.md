@@ -144,8 +144,18 @@ Before submitting a PR:
 - **Testing**: Unit tests and integration tests
 - **Documentation**: Better examples and guides
 - **Platform Support**: Better support for Linux/macOS
-- **Performance**: Optimization and caching
+- **Performance**: Optimization and caching (✅ npm caching added in v1.1.0)
 - **UI/UX**: Better interactive prompts
+- **Version Resolution**: Enhanced library compatibility algorithms
+
+## 🆕 Recent Updates (v1.1.0)
+
+The following features were added in v1.1.0:
+- Dynamic library version resolution
+- npm registry peer dependency checking
+- Package response caching
+- Compatibility warnings display
+- Three-step Angular version selection
 
 ## 🔍 Code Review Process
 

@@ -2,7 +2,7 @@ import inquirer from 'inquirer';
 import inquirerAutocomplete from 'inquirer-autocomplete-prompt';
 import chalk from 'chalk';
 import { searchNpmPackages, getEnhancedPackageInfo, formatDownloads, getPackageVersions, getMajorVersions, getMinorVersionsForMajor, getPatchVersionsForMinor, getPackagePeerDependencies, findCompatiblePackageVersions } from './npm-search.js';
-import { checkLibraryCompatibility } from './compatibility.js';
+import { checkLibraryCompatibility, isVersionCompatibleWithAngular, getAllCompatibleVersions } from './compatibility.js';
 
 // Register autocomplete prompt
 inquirer.registerPrompt('autocomplete', inquirerAutocomplete);
@@ -158,82 +158,79 @@ export async function interactiveLibrarySearch(angularVersion = null) {
                     if (angularVersion && version !== 'latest') {
                         console.log(chalk.cyan(`\n🔍 Checking compatibility with Angular ${angularVersion}...\n`));
                         
-                        const peerDeps = await getPackagePeerDependencies(info.name, version);
-                        const angularPeerDep = peerDeps['@angular/core'] || peerDeps['@angular/common'];
+                        // Use dynamic compatibility check
+                        const compatibility = await isVersionCompatibleWithAngular(info.name, version, angularVersion);
                         
-                        if (angularPeerDep) {
-                            const compatibility = checkLibraryCompatibility(angularPeerDep, angularVersion);
+                        if (compatibility.compatible) {
+                            console.log(chalk.green(`✓ ${info.name}@${version} is compatible with Angular ${angularVersion}`));
+                            if (compatibility.peerDependency) {
+                                console.log(chalk.gray(`  Peer dependency: ${compatibility.peerDependency}\n`));
+                            }
+                        } else {
+                            console.log(chalk.red(`✗ ${info.name}@${version} may not be compatible with Angular ${angularVersion}`));
+                            console.log(chalk.gray(`  ${compatibility.reason}\n`));
                             
-                            if (compatibility.compatible) {
-                                console.log(chalk.green(`✓ ${info.name}@${version} is compatible with Angular ${angularVersion}`));
-                                console.log(chalk.gray(`  Peer dependency: ${angularPeerDep}\n`));
-                            } else {
-                                console.log(chalk.red(`✗ ${info.name}@${version} may not be compatible with Angular ${angularVersion}`));
-                                console.log(chalk.gray(`  Peer dependency requires: ${angularPeerDep}\n`));
+                            // Suggest compatible versions
+                            const suggestAnswer = await inquirer.prompt([
+                                {
+                                    type: 'confirm',
+                                    name: 'suggest',
+                                    message: 'Would you like to see compatible versions?',
+                                    default: true
+                                }
+                            ]);
+
+                            if (suggestAnswer.suggest) {
+                                console.log(chalk.cyan(`\n🔍 Dynamically searching for compatible versions...\n`));
+                                // Use dynamic compatibility search
+                                const compatibleVersions = await getAllCompatibleVersions(info.name, angularVersion, 10);
                                 
-                                // Suggest compatible versions
-                                const suggestAnswer = await inquirer.prompt([
-                                    {
-                                        type: 'confirm',
-                                        name: 'suggest',
-                                        message: 'Would you like to see compatible versions?',
-                                        default: true
-                                    }
-                                ]);
-
-                                if (suggestAnswer.suggest) {
-                                    console.log(chalk.cyan(`\n🔍 Searching for compatible versions...\n`));
-                                    const compatibleVersions = await findCompatiblePackageVersions(info.name, angularVersion, 10);
+                                if (compatibleVersions.length > 0) {
+                                    const versionChoices = compatibleVersions.map(cv => ({
+                                        name: `${cv.version}${cv.peerDependency ? ` (peer: ${cv.peerDependency})` : ''}`,
+                                        value: cv.version
+                                    }));
                                     
-                                    if (compatibleVersions.length > 0) {
-                                        const versionChoices = compatibleVersions.map(cv => ({
-                                            name: `${cv.version} (requires: ${cv.peerDependency})`,
-                                            value: cv.version
-                                        }));
-                                        
-                                        versionChoices.push({ name: 'Keep selected version anyway', value: version });
+                                    versionChoices.push({ name: 'Keep selected version anyway', value: version });
 
-                                        const compatibleAnswer = await inquirer.prompt([
-                                            {
-                                                type: 'list',
-                                                name: 'version',
-                                                message: 'Select a compatible version:',
-                                                choices: versionChoices,
-                                                pageSize: 12
-                                            }
-                                        ]);
+                                    const compatibleAnswer = await inquirer.prompt([
+                                        {
+                                            type: 'list',
+                                            name: 'version',
+                                            message: 'Select a compatible version:',
+                                            choices: versionChoices,
+                                            pageSize: 12
+                                        }
+                                    ]);
 
-                                        version = compatibleAnswer.version;
-                                    } else {
-                                        console.log(chalk.yellow('No compatible versions found automatically.'));
-                                        const keepAnswer = await inquirer.prompt([
+                                    version = compatibleAnswer.version;
+                                } else {
+                                    console.log(chalk.yellow('No compatible versions found automatically.'));
+                                    const keepAnswer = await inquirer.prompt([
+                                        {
+                                            type: 'confirm',
+                                            name: 'keep',
+                                            message: 'Continue with the selected version anyway?',
+                                            default: false
+                                        }
+                                    ]);
+
+                                    if (!keepAnswer.keep) {
+                                        console.log(chalk.yellow('Skipping this library.\n'));
+                                        const continueAnswer = await inquirer.prompt([
                                             {
                                                 type: 'confirm',
-                                                name: 'keep',
-                                                message: 'Continue with the selected version anyway?',
-                                                default: false
+                                                name: 'continue',
+                                                message: 'Add another library?',
+                                                default: true
                                             }
                                         ]);
 
-                                        if (!keepAnswer.keep) {
-                                            console.log(chalk.yellow('Skipping this library.\n'));
-                                            const continueAnswer = await inquirer.prompt([
-                                                {
-                                                    type: 'confirm',
-                                                    name: 'continue',
-                                                    message: 'Add another library?',
-                                                    default: true
-                                                }
-                                            ]);
-
-                                            continueSearching = continueAnswer.continue;
-                                            continue;
-                                        }
+                                        continueSearching = continueAnswer.continue;
+                                        continue;
                                     }
                                 }
                             }
-                        } else {
-                            console.log(chalk.gray(`ℹ  ${info.name}@${version} has no Angular peer dependencies\n`));
                         }
                     }
 
@@ -329,22 +326,18 @@ export async function simpleLibraryInput(angularVersion = null) {
         if (angularVersion && version !== 'latest') {
             console.log(chalk.cyan(`\n🔍 Checking compatibility with Angular ${angularVersion}...\n`));
             
-            const peerDeps = await getPackagePeerDependencies(answer.library, version);
-            const angularPeerDep = peerDeps['@angular/core'] || peerDeps['@angular/common'];
+            // Use dynamic compatibility check
+            const compatibility = await isVersionCompatibleWithAngular(answer.library, version, angularVersion);
             
-            if (angularPeerDep) {
-                const compatibility = checkLibraryCompatibility(angularPeerDep, angularVersion);
-                
-                if (compatibility.compatible) {
-                    console.log(chalk.green(`✓ ${answer.library}@${version} is compatible with Angular ${angularVersion}`));
-                    console.log(chalk.gray(`  Peer dependency: ${angularPeerDep}\n`));
-                } else {
-                    console.log(chalk.red(`✗ ${answer.library}@${version} may not be compatible with Angular ${angularVersion}`));
-                    console.log(chalk.gray(`  Peer dependency requires: ${angularPeerDep}\n`));
-                    console.log(chalk.yellow('⚠️  This may cause installation issues. Consider using a different version.\n'));
+            if (compatibility.compatible) {
+                console.log(chalk.green(`✓ ${answer.library}@${version} is compatible with Angular ${angularVersion}`));
+                if (compatibility.peerDependency) {
+                    console.log(chalk.gray(`  Peer dependency: ${compatibility.peerDependency}\n`));
                 }
             } else {
-                console.log(chalk.gray(`ℹ  ${answer.library}@${version} has no Angular peer dependencies\n`));
+                console.log(chalk.red(`✗ ${answer.library}@${version} may not be compatible with Angular ${angularVersion}`));
+                console.log(chalk.gray(`  ${compatibility.reason}\n`));
+                console.log(chalk.yellow('⚠️  This may cause installation issues. Consider using a different version.\n'));
             }
         }
 

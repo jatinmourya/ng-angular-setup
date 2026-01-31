@@ -41,7 +41,7 @@ export function getNvmInstallInstructions() {
             os: 'macOS',
             method: 'Using curl',
             url: 'https://github.com/nvm-sh/nvm',
-            command: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash',
+            command: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash',
             description: 'Run the curl command in your terminal to install nvm.'
         };
     } else {
@@ -49,8 +49,8 @@ export function getNvmInstallInstructions() {
             os: 'Linux',
             method: 'Using curl or wget',
             url: 'https://github.com/nvm-sh/nvm',
-            command: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash',
-            alternativeCommand: 'wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash',
+            command: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash',
+            alternativeCommand: 'wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash',
             description: 'Run either the curl or wget command in your terminal to install nvm.'
         };
     }
@@ -119,9 +119,8 @@ export async function installPackages(packages, projectPath, dev = false) {
         if (dev) args.push('--save-dev');
         args.push(...packages);
         
-        await execa('npm', args, { 
-            cwd: projectPath,
-            stdio: 'inherit'
+        const { stdout, stderr } = await execa('npm', args, { 
+            cwd: projectPath
         });
         
         spinner.succeed('Packages installed successfully');
@@ -135,9 +134,8 @@ export async function installPackages(packages, projectPath, dev = false) {
             if (dev) args.push('--save-dev');
             args.push(...packages);
             
-            await execa('npm', args, { 
-                cwd: projectPath,
-                stdio: 'inherit'
+            const { stdout, stderr } = await execa('npm', args, { 
+                cwd: projectPath
             });
             
             spinner.succeed('Packages installed successfully with --legacy-peer-deps');
@@ -177,9 +175,8 @@ export async function runNpmInstall(projectPath) {
     const spinner = ora('Installing dependencies...').start();
     
     try {
-        await execa('npm', ['install'], { 
-            cwd: projectPath,
-            stdio: 'inherit'
+        const { stdout, stderr } = await execa('npm', ['install'], { 
+            cwd: projectPath
         });
         
         spinner.succeed('Dependencies installed successfully');
@@ -189,9 +186,8 @@ export async function runNpmInstall(projectPath) {
         
         // Retry with --legacy-peer-deps flag
         try {
-            await execa('npm', ['install', '--legacy-peer-deps'], { 
-                cwd: projectPath,
-                stdio: 'inherit'
+            const { stdout, stderr } = await execa('npm', ['install', '--legacy-peer-deps'], { 
+                cwd: projectPath
             });
             
             spinner.succeed('Dependencies installed successfully with --legacy-peer-deps');

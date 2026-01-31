@@ -10,7 +10,7 @@ const program = new Command();
 program
     .name('ng-init')
     .description('Angular project initializer with intelligent version management and automation')
-    .version('1.0.0');
+    .version('1.1.0');
 
 // Main command - create new project
 program
@@ -146,7 +146,3 @@ program
 
 program.parse(process.argv);
 
-// Show help if no command provided
-// if (!process.argv.slice(2).length) {
-//     runCli();
-// }

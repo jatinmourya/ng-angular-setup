@@ -61,8 +61,7 @@ export const PROJECT_TEMPLATES = {
         },
         packages: [
             '@angular/material',
-            '@angular/cdk',
-            '@angular/flex-layout'
+            '@angular/cdk'
         ]
     },
     testing: {
@@ -103,11 +102,10 @@ export const PROJECT_TEMPLATES = {
 export const LIBRARY_BUNDLES = {
     uiFramework: {
         name: 'UI Framework Bundle',
-        description: 'Angular Material + CDK + Flex Layout',
+        description: 'Angular Material + CDK',
         packages: [
             { name: '@angular/material', version: 'latest' },
-            { name: '@angular/cdk', version: 'latest' },
-            { name: '@angular/flex-layout', version: 'latest' }
+            { name: '@angular/cdk', version: 'latest' }
         ]
     },
     stateManagement: {

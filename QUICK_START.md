@@ -29,11 +29,14 @@ ng-init
 The CLI will guide you through:
 
 1. **System Check** - Reviews your Node.js, npm, and Angular CLI versions
-2. **Angular Version** - Select which Angular version to use
+2. **Angular Version Selection** (3-step process):
+   - Select major version (e.g., Angular 17, 18, 19)
+   - Select minor version (e.g., 17.0.x, 17.1.x)
+   - Select patch version (e.g., 17.1.0, 17.1.1)
 3. **Compatibility Check** - Ensures your Node.js version is compatible
 4. **Project Configuration** - Name your project and choose location
 5. **Template Selection** - Pick a pre-configured template or customize
-6. **Library Search** - Add additional npm packages (optional)
+6. **Library Search** - Add additional npm packages (with auto version resolution)
 7. **Additional Features** - Git, documentation, linting, etc.
 8. **Save Profile** - Optionally save your configuration for reuse
 
@@ -157,7 +160,16 @@ When you create a project, you get:
 - **Utilities** - Lodash, date-fns, RxJS
 - **HTTP & API** - HTTP client and tools
 
-## 🐛 Troubleshooting
+## � Dynamic Version Resolution (v1.1.0)
+
+The CLI automatically resolves compatible library versions:
+- ✅ Checks peer dependencies from npm registry
+- ✅ Matches major versions for `@angular/*` packages
+- ✅ Matches major versions for `@ngrx/*` packages
+- ✅ Displays adjusted versions during installation
+- ✅ Shows warnings for potentially incompatible packages
+
+## �🐛 Troubleshooting
 
 ### "Node version incompatible"
 The CLI will automatically guide you to:

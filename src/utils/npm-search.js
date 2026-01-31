@@ -283,6 +283,7 @@ export async function getNodeRequirementsForAngular(angularVersion) {
         // Default Node requirements if we can't fetch
         const majorVersion = parseInt(angularVersion.split('.')[0]);
         
+        if (majorVersion >= 19) return '^18.19.1 || ^20.11.1 || ^22.0.0';
         if (majorVersion >= 17) return '^18.13.0 || ^20.9.0';
         if (majorVersion >= 16) return '^16.14.0 || ^18.10.0';
         if (majorVersion >= 15) return '^14.20.0 || ^16.13.0 || ^18.10.0';

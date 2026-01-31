@@ -34,7 +34,14 @@ A comprehensive command-line interface (CLI) tool designed to automate and strea
   - Version selection (latest or specific)
   - Multiple library queue management
 
-- **📦 Popular Library Bundles**
+- **� Dynamic Library Version Resolution**
+  - Automatically resolves compatible versions based on Angular version
+  - Checks peer dependencies from npm registry
+  - Matches major versions for Angular-scoped packages
+  - Displays compatibility warnings
+  - Caches npm responses for performance
+
+- **�📦 Popular Library Bundles**
   - UI Framework Bundle (Material + CDK + Flex Layout)
   - State Management Bundle (NgRx suite)
   - Form & Validation Bundle
@@ -206,24 +213,214 @@ ng-init examples
 6. Enable Husky hooks
 7. Project created with complete testing setup
 
+## 📊 CLI Application Flow Diagram
+
+The following diagram illustrates the complete user journey when using the `ng-init` CLI application:
+
+```mermaid
+flowchart TB
+    subgraph START["🚀 CLI Start"]
+        A["User runs ng-init"] --> B["Display Welcome Banner"]
+        B --> C["Display System Versions<br/>(Node.js, npm, nvm, Angular CLI)"]
+    end
+
+    subgraph PROFILE["💾 Profile Check"]
+        C --> D{"Use saved profile?"}
+        D -->|"Yes"| E["List available profiles"]
+        E --> F["Select profile"]
+        F --> G["Display profile info"]
+        G --> H{"Confirm profile?"}
+        H -->|"Yes"| SKIP["Skip to Project Name<br/>(if not in profile)"]
+        H -->|"No"| I["Continue with manual setup"]
+        D -->|"No"| I
+    end
+
+    subgraph ANGULAR["📦 Angular Version Selection"]
+        I --> J["Fetch Angular versions from npm"]
+        J --> K["Select Major Version<br/>(e.g., Angular 17, 18, 19)"]
+        K --> L["Select Minor Version<br/>(e.g., 17.0.x, 17.1.x)"]
+        L --> M["Select Patch Version<br/>(e.g., 17.1.0, 17.1.1)"]
+        M --> N["Angular version confirmed"]
+    end
+
+    subgraph NODE["🔧 Node.js Compatibility"]
+        N --> O["Check Node.js requirements"]
+        SKIP --> O
+        O --> P{"Node.js compatible?"}
+        P -->|"Yes"| PROJECT
+        P -->|"No"| Q{"nvm installed?"}
+        Q -->|"Yes"| R["Check installed Node versions"]
+        R --> S{"Compatible version<br/>available?"}
+        S -->|"Yes"| T["Select & switch Node version"]
+        T --> PROJECT
+        S -->|"No"| U["Install recommended Node version"]
+        U --> T
+        Q -->|"No"| V{"How to proceed?"}
+        V -->|"Install nvm"| W["Display nvm install guide"]
+        W --> X["Exit - Install manually"]
+        V -->|"Direct install<br/>(Windows)"| Y["Install Node via winget"]
+        Y --> Z["Exit - Restart terminal"]
+        V -->|"Exit"| X
+    end
+
+    subgraph PROJECT["📁 Project Configuration"]
+        AA["Enter project name"] --> BB{"Select location?"}
+        BB -->|"Current directory"| CC["Use current directory"]
+        BB -->|"Custom"| DD["Enter custom path"]
+        CC --> EE["Project path confirmed"]
+        DD --> EE
+    end
+
+    subgraph TEMPLATE["🎨 Template Selection"]
+        EE --> FF{"Select template"}
+        FF -->|"Basic SPA"| GG["Minimal setup"]
+        FF -->|"Enterprise"| HH["NgRx + Material + ESLint"]
+        FF -->|"PWA Ready"| II["Service workers + offline"]
+        FF -->|"Material Design"| JJ["Angular Material components"]
+        FF -->|"Testing Ready"| KK["Jest + Testing Library"]
+        FF -->|"Standalone"| LL["Modern standalone components"]
+        FF -->|"Custom"| MM["Configure manually"]
+        MM --> NN["Enable routing?"]
+        NN --> OO["Select stylesheet format"]
+        OO --> PP["Enable strict mode?"]
+        PP --> QQ["Use standalone components?"]
+        GG & HH & II & JJ & KK & LL & QQ --> RR["Template configured"]
+    end
+
+    subgraph LIBRARY["📚 Library Selection"]
+        RR --> SS{"Library selection method?"}
+        SS -->|"Interactive Search"| TT["Search npm packages"]
+        TT --> UU["Select package"]
+        UU --> VV["Choose version method"]
+        VV -->|"Latest"| WW["Use latest version"]
+        VV -->|"Specific"| XX["Select Major → Minor → Patch"]
+        VV -->|"Manual"| YY["Enter version manually"]
+        WW & XX & YY --> ZZ["Check Angular compatibility"]
+        ZZ --> AAA{"Add more libraries?"}
+        AAA -->|"Yes"| TT
+        AAA -->|"No"| BBB["Libraries selected"]
+        
+        SS -->|"Manual Input"| CCC["Enter package names"]
+        CCC --> BBB
+        
+        SS -->|"Library Bundles"| DDD["Select predefined bundles"]
+        DDD --> EEE["UI Framework / State Mgmt /<br/>Forms / Testing / etc."]
+        EEE --> BBB
+        
+        SS -->|"Skip"| BBB
+    end
+
+    subgraph FEATURES["⚙️ Additional Features"]
+        BBB --> FFF["Select features"]
+        FFF --> GGG["☑️ Git initialization"]
+        FFF --> HHH["☑️ Project structure"]
+        FFF --> III["☑️ README.md"]
+        FFF --> JJJ["☐ CHANGELOG.md"]
+        FFF --> KKK["☐ ESLint + Prettier"]
+        FFF --> LLL["☐ Husky hooks"]
+        GGG & HHH & III & JJJ & KKK & LLL --> MMM["Features configured"]
+    end
+
+    subgraph SAVE["💾 Save Profile"]
+        MMM --> NNN{"Save as profile?"}
+        NNN -->|"Yes"| OOO["Enter profile name"]
+        OOO --> PPP["Profile saved"]
+        PPP --> QQQ["Display configuration summary"]
+        NNN -->|"No"| QQQ
+    end
+
+    subgraph CONFIRM["✅ Confirmation"]
+        QQQ --> RRR{"Confirm creation?"}
+        RRR -->|"No"| SSS["Project creation cancelled"]
+        RRR -->|"Yes"| TTT["Start project creation"]
+    end
+
+    subgraph CREATE["🔨 Project Creation"]
+        TTT --> UUU["Create Angular project"]
+        UUU --> VVV["Resolve library versions"]
+        VVV --> WWW["Install additional libraries"]
+        WWW --> XXX["Run npm install"]
+        XXX --> YYY{"Structure enabled?"}
+        YYY -->|"Yes"| ZZZ["Create project folders & files"]
+        YYY -->|"No"| AAAA
+        ZZZ --> AAAA{"Git enabled?"}
+        AAAA -->|"Yes"| BBBB["Initialize Git repo"]
+        BBBB --> CCCC["Create .gitignore"]
+        AAAA -->|"No"| DDDD
+        CCCC --> DDDD{"README enabled?"}
+        DDDD -->|"Yes"| EEEE["Generate README.md"]
+        DDDD -->|"No"| FFFF
+        EEEE --> FFFF{"Changelog enabled?"}
+        FFFF -->|"Yes"| GGGG["Generate CHANGELOG.md"]
+        FFFF -->|"No"| HHHH
+        GGGG --> HHHH{"ESLint enabled?"}
+        HHHH -->|"Yes"| IIII["Setup ESLint + Prettier"]
+        HHHH -->|"No"| JJJJ
+        IIII --> JJJJ{"Husky enabled?"}
+        JJJJ -->|"Yes"| KKKK["Setup Husky hooks"]
+        JJJJ -->|"No"| LLLL
+        KKKK --> LLLL{"Git enabled?"}
+        LLLL -->|"Yes"| MMMM["Create initial commit"]
+        LLLL -->|"No"| NNNN
+        MMMM --> NNNN["🎉 Success!"]
+    end
+
+    subgraph END["🏁 Complete"]
+        NNNN --> OOOO["Display next steps"]
+        OOOO --> PPPP["cd project-name"]
+        PPPP --> QQQQ["ng serve"]
+        QQQQ --> RRRR["Open localhost:4200"]
+    end
+
+    style START fill:#e1f5fe
+    style PROFILE fill:#f3e5f5
+    style ANGULAR fill:#fff3e0
+    style NODE fill:#ffebee
+    style PROJECT fill:#e8f5e9
+    style TEMPLATE fill:#fce4ec
+    style LIBRARY fill:#e0f2f1
+    style FEATURES fill:#fff8e1
+    style SAVE fill:#f3e5f5
+    style CONFIRM fill:#e8eaf6
+    style CREATE fill:#e3f2fd
+    style END fill:#c8e6c9
+```
+
+### Flow Description
+
+| Step | Phase | Description |
+|------|-------|-------------|
+| 1 | **Start** | User initiates CLI with `ng-init` command |
+| 2 | **System Check** | Displays current Node.js, npm, nvm, and Angular CLI versions |
+| 3 | **Profile** | Option to use a previously saved configuration profile |
+| 4 | **Angular Version** | Three-tier selection: Major → Minor → Patch version |
+| 5 | **Node.js Check** | Validates and resolves Node.js compatibility |
+| 6 | **Project Setup** | Configure project name and location |
+| 7 | **Template** | Choose from 6 pre-configured templates or custom setup |
+| 8 | **Libraries** | Interactive search, manual input, or bundled packages |
+| 9 | **Features** | Select Git, structure, docs, linting, hooks |
+| 10 | **Save Profile** | Optionally save configuration for reuse |
+| 11 | **Confirm** | Review summary and confirm creation |
+| 12 | **Create** | Execute all selected operations |
+| 13 | **Complete** | Display success message and next steps |
+
 ## 🏗️ Project Structure
 
 ```
 ng-init/
 ├── src/
-│   ├── commands/              # CLI command handlers
+│   ├── index.js               # CLI entry point (v1.1.0)
+│   ├── runner.js              # Main CLI flow
 │   ├── utils/                 # Helper functions
 │   │   ├── version-checker.js    # Version detection and management
-│   │   ├── compatibility.js      # Compatibility checking
+│   │   ├── compatibility.js      # Compatibility checking & version resolution
 │   │   ├── npm-search.js         # npm registry search
 │   │   ├── installer.js          # Package installation
 │   │   ├── prompt-handler.js     # Interactive prompts
 │   │   ├── file-utils.js         # File operations
 │   │   └── profile-manager.js    # Profile management
-│   ├── templates/             # Project templates
-│   │   └── templates.js          # Template definitions
-│   ├── index.js              # CLI entry point
-│   └── runner.js             # Main CLI flow
+│   └── templates/             # Project templates
+│       └── templates.js          # Template definitions
 ├── package.json
 └── README.md
 ```
@@ -292,9 +489,10 @@ For detailed documentation, visit [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTA
 - ✅ **Zero environment setup errors** with guided installation
 - 🚀 **Instant project scaffolding** with best practices
 - 💾 **Reusable profiles** for team standardization
+- 🔄 **Dynamic library version resolution** for Angular compatibility
 
 ---
 
 **Made with ❤️ by the Angular community**
 
-**Last Updated**: January 30, 2026
+**Last Updated**: January 31, 2026

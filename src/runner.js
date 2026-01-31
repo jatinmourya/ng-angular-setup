@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import path from 'path';
 import { displaySystemVersions, getNodeVersion, isNvmInstalled, switchNodeVersion, installNodeVersion, getInstalledNodeVersions } from './utils/version-checker.js';
 import { getAngularVersions, getNodeRequirementsForAngular, getMajorVersions, getMinorVersionsForMajor, getPatchVersionsForMinor } from './utils/npm-search.js';
-import { checkNodeCompatibility, displayCompatibilityStatus, findCompatibleVersions, getRecommendedNodeVersion, resolveLibraryVersions } from './utils/compatibility.js';
+import { checkNodeCompatibility, displayCompatibilityStatus, findCompatibleVersions, getRecommendedNodeVersion, resolveLibraryVersionsAsync } from './utils/compatibility.js';
 import { createAngularProject, installPackages, runNpmInstall, installNodeWithWinget, displayNvmInstallGuide } from './utils/installer.js';
 import { interactiveLibrarySearch, simpleLibraryInput, askLibrarySearchPreference } from './utils/prompt-handler.js';
 import { PROJECT_TEMPLATES, LIBRARY_BUNDLES, CONFIG_PRESETS, PROJECT_STRUCTURE, GIT_CONFIG, DOC_TEMPLATES } from './templates/templates.js';
@@ -14,7 +14,7 @@ export async function runCli() {
     try {
         // Display welcome banner
         console.log(chalk.bold.cyan('\n╔════════════════════════════════════════════════╗'));
-        console.log(chalk.bold.cyan('║   Angular Project Automation CLI v1.0.0        ║'));
+        console.log(chalk.bold.cyan('║   Angular Project Automation CLI v1.1.0        ║'));
         console.log(chalk.bold.cyan('╚════════════════════════════════════════════════╝\n'));
 
         // Step 1: Display system versions
@@ -375,7 +375,16 @@ export async function runCli() {
 
                 for (const bundleKey of bundleAnswer.bundles) {
                     const bundle = LIBRARY_BUNDLES[bundleKey];
-                    config.libraries.push(...bundle.packages);
+                    if (bundle.packages) {
+                        config.libraries.push(...bundle.packages);
+                    }
+                    // Also include devPackages from bundles
+                    if (bundle.devPackages) {
+                        config.libraries.push(...bundle.devPackages.map(pkg => ({
+                            ...pkg,
+                            isDev: true
+                        })));
+                    }
                 }
             }
 
@@ -389,24 +398,26 @@ export async function runCli() {
             }
         }
 
-        // Step 10: Additional features
-        const featuresAnswer = await inquirer.prompt([
-            {
-                type: 'checkbox',
-                name: 'features',
-                message: 'Select additional features:',
-                choices: [
-                    { name: 'Git initialization', value: 'git', checked: true },
-                    { name: 'Create project structure', value: 'structure', checked: true },
-                    { name: 'Generate README.md', value: 'readme', checked: true },
-                    { name: 'Generate CHANGELOG.md', value: 'changelog', checked: false },
-                    { name: 'ESLint + Prettier setup', value: 'eslint', checked: false },
-                    { name: 'Husky pre-commit hooks', value: 'husky', checked: false }
-                ]
-            }
-        ]);
+        // Step 10: Additional features (if not from profile)
+        if (!config.features) {
+            const featuresAnswer = await inquirer.prompt([
+                {
+                    type: 'checkbox',
+                    name: 'features',
+                    message: 'Select additional features:',
+                    choices: [
+                        { name: 'Git initialization', value: 'git', checked: true },
+                        { name: 'Create project structure', value: 'structure', checked: true },
+                        { name: 'Generate README.md', value: 'readme', checked: true },
+                        { name: 'Generate CHANGELOG.md', value: 'changelog', checked: false },
+                        { name: 'ESLint + Prettier setup', value: 'eslint', checked: false },
+                        { name: 'Husky pre-commit hooks', value: 'husky', checked: false }
+                    ]
+                }
+            ]);
 
-        config.features = featuresAnswer.features;
+            config.features = featuresAnswer.features;
+        }
 
         // Step 11: Save profile option
         const saveProfileAnswer = await inquirer.prompt([
@@ -473,20 +484,38 @@ export async function runCli() {
 
         // Step 14: Install libraries
         if (config.libraries.length > 0) {
-            console.log(chalk.bold.cyan('\n📦 Installing additional libraries...\n'));
+            console.log(chalk.bold.cyan('\n📦 Resolving library versions...\n'));
             
-            // Resolve library versions for compatibility with Angular version
-            const resolvedLibraries = resolveLibraryVersions(config.libraries, config.angularVersion);
+            // Resolve library versions dynamically for compatibility with Angular version
+            const resolvedLibraries = await resolveLibraryVersionsAsync(config.libraries, config.angularVersion);
             
             // Show adjusted versions if any
             const adjusted = resolvedLibraries.filter(lib => lib.adjusted);
             if (adjusted.length > 0) {
-                console.log(chalk.yellow('⚠️  Adjusted library versions for Angular compatibility:\n'));
+                console.log(chalk.green('✓ Dynamically resolved compatible library versions:\n'));
                 adjusted.forEach(lib => {
                     console.log(chalk.gray(`   ${lib.name}: ${lib.originalVersion} → ${lib.version}`));
+                    if (lib.reason) {
+                        console.log(chalk.gray(`     └─ ${lib.reason}`));
+                    }
                 });
                 console.log('');
             }
+            
+            // Show warnings for potentially incompatible libraries
+            const warnings = resolvedLibraries.filter(lib => lib.warning);
+            if (warnings.length > 0) {
+                console.log(chalk.yellow('⚠️  Potential compatibility warnings:\n'));
+                warnings.forEach(lib => {
+                    console.log(chalk.yellow(`   ${lib.name}@${lib.version}`));
+                    if (lib.reason) {
+                        console.log(chalk.gray(`     └─ ${lib.reason}`));
+                    }
+                });
+                console.log('');
+            }
+            
+            console.log(chalk.bold.cyan('📦 Installing additional libraries...\n'));
             
             const librarySpecs = resolvedLibraries.map(lib => 
                 lib.version === 'latest' ? lib.name : `${lib.name}@${lib.version}`

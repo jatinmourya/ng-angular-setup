@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-31
+
+### Added
+- **Dynamic Library Version Resolution** - Automatically resolves compatible library versions based on Angular version
+- **npm Registry Integration** - Real-time fetching of package peer dependencies for compatibility checking
+- **Intelligent Version Matching** - For Angular-scoped packages (`@angular/*`, `@ngrx/*`), automatically matches major versions
+- **Compatibility Warnings** - Displays warnings for potentially incompatible library versions
+- **Package Caching** - 5-minute cache for npm registry responses to improve performance
+- **Three-step Angular Version Selection** - Select major → minor → patch versions interactively
+
+### Changed
+- Updated version to 1.1.0
+- Improved library installation process with resolved versions display
+- Enhanced compatibility checking with semver validation
+- Updated CLI banner to show version 1.1.0
+
+### Fixed
+- Library versions now properly resolve for Angular compatibility instead of defaulting to 'latest'
+- Improved error handling in npm registry requests
+
+---
+
 ## [1.0.0] - 2026-01-30
 
 ### Added
@@ -126,4 +148,5 @@ The tool automates the entire project setup process, from checking system prereq
 
 ---
 
+[1.1.0]: https://github.com/jatinmourya/ng-init/releases/tag/v1.1.0
 [1.0.0]: https://github.com/jatinmourya/ng-init/releases/tag/v1.0.0
