@@ -147,6 +147,6 @@ program
 program.parse(process.argv);
 
 // Show help if no command provided
-if (!process.argv.slice(2).length) {
-    runCli();
-}
+// if (!process.argv.slice(2).length) {
+//     runCli();
+// }

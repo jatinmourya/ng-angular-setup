@@ -127,9 +127,30 @@ export async function installPackages(packages, projectPath, dev = false) {
         spinner.succeed('Packages installed successfully');
         return true;
     } catch (error) {
-        spinner.fail('Failed to install packages');
-        console.error(chalk.red(error.message));
-        return false;
+        spinner.warn('Failed with strict dependencies, retrying with --legacy-peer-deps...');
+        
+        // Retry with --legacy-peer-deps flag
+        try {
+            const args = ['install', '--legacy-peer-deps'];
+            if (dev) args.push('--save-dev');
+            args.push(...packages);
+            
+            await execa('npm', args, { 
+                cwd: projectPath,
+                stdio: 'inherit'
+            });
+            
+            spinner.succeed('Packages installed successfully with --legacy-peer-deps');
+            console.log(chalk.yellow('⚠️  Note: Installed with --legacy-peer-deps flag due to peer dependency conflicts'));
+            return true;
+        } catch (retryError) {
+            spinner.fail('Failed to install packages');
+            console.error(chalk.red(retryError.message));
+            console.log(chalk.yellow('\n💡 Tip: You can try installing manually with:'));
+            console.log(chalk.cyan(`   cd ${projectPath}`));
+            console.log(chalk.cyan(`   npm install ${packages.join(' ')} --force`));
+            return false;
+        }
     }
 }
 
@@ -164,9 +185,26 @@ export async function runNpmInstall(projectPath) {
         spinner.succeed('Dependencies installed successfully');
         return true;
     } catch (error) {
-        spinner.fail('Failed to install dependencies');
-        console.error(chalk.red(error.message));
-        return false;
+        spinner.warn('Failed with strict dependencies, retrying with --legacy-peer-deps...');
+        
+        // Retry with --legacy-peer-deps flag
+        try {
+            await execa('npm', ['install', '--legacy-peer-deps'], { 
+                cwd: projectPath,
+                stdio: 'inherit'
+            });
+            
+            spinner.succeed('Dependencies installed successfully with --legacy-peer-deps');
+            console.log(chalk.yellow('⚠️  Note: Installed with --legacy-peer-deps flag due to peer dependency conflicts'));
+            return true;
+        } catch (retryError) {
+            spinner.fail('Failed to install dependencies');
+            console.error(chalk.red(retryError.message));
+            console.log(chalk.yellow('\n💡 Tip: You can try installing manually with:'));
+            console.log(chalk.cyan(`   cd ${projectPath}`));
+            console.log(chalk.cyan(`   npm install --force`));
+            return false;
+        }
     }
 }
 

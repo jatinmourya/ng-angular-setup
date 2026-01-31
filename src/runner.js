@@ -2,8 +2,8 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import path from 'path';
 import { displaySystemVersions, getNodeVersion, isNvmInstalled, switchNodeVersion, installNodeVersion, getInstalledNodeVersions } from './utils/version-checker.js';
-import { getAngularVersions, getNodeRequirementsForAngular } from './utils/npm-search.js';
-import { checkNodeCompatibility, displayCompatibilityStatus, findCompatibleVersions, getRecommendedNodeVersion } from './utils/compatibility.js';
+import { getAngularVersions, getNodeRequirementsForAngular, getMajorVersions, getMinorVersionsForMajor, getPatchVersionsForMinor } from './utils/npm-search.js';
+import { checkNodeCompatibility, displayCompatibilityStatus, findCompatibleVersions, getRecommendedNodeVersion, resolveLibraryVersions } from './utils/compatibility.js';
 import { createAngularProject, installPackages, runNpmInstall, installNodeWithWinget, displayNvmInstallGuide } from './utils/installer.js';
 import { interactiveLibrarySearch, simpleLibraryInput, askLibrarySearchPreference } from './utils/prompt-handler.js';
 import { PROJECT_TEMPLATES, LIBRARY_BUNDLES, CONFIG_PRESETS, PROJECT_STRUCTURE, GIT_CONFIG, DOC_TEMPLATES } from './templates/templates.js';
@@ -14,7 +14,7 @@ export async function runCli() {
     try {
         // Display welcome banner
         console.log(chalk.bold.cyan('\n╔════════════════════════════════════════════════╗'));
-        console.log(chalk.bold.cyan('║   Angular Project Automation CLI v1.0.0       ║'));
+        console.log(chalk.bold.cyan('║   Angular Project Automation CLI v1.0.0        ║'));
         console.log(chalk.bold.cyan('╚════════════════════════════════════════════════╝\n'));
 
         // Step 1: Display system versions
@@ -75,25 +75,65 @@ export async function runCli() {
                 process.exit(1);
             }
 
-            // Show top 20 versions
-            const versionChoices = angularVersions.versions.slice(0, 20).map(v => {
-                let label = v;
-                if (v === angularVersions.latest) label += ' (latest)';
-                if (v === angularVersions.lts) label += ' (LTS)';
-                return { name: label, value: v };
+            // Step 3.1: Select Major Version
+            const majorVersions = getMajorVersions(angularVersions.versions);
+            const majorChoices = majorVersions.map(major => {
+                const label = `Angular ${major}`;
+                // Check if this major version contains the latest
+                const isLatest = angularVersions.latest && angularVersions.latest.startsWith(`${major}.`);
+                return { 
+                    name: isLatest ? `${label} (latest)` : label, 
+                    value: major 
+                };
             });
 
-            const versionAnswer = await inquirer.prompt([
+            const majorAnswer = await inquirer.prompt([
                 {
                     type: 'list',
-                    name: 'version',
-                    message: 'Select Angular version:',
-                    choices: versionChoices,
+                    name: 'major',
+                    message: 'Select Angular major version:',
+                    choices: majorChoices,
                     pageSize: 15
                 }
             ]);
 
-            config.angularVersion = versionAnswer.version;
+            // Step 3.2: Select Minor Version
+            const minorVersions = getMinorVersionsForMajor(angularVersions.versions, majorAnswer.major);
+            const minorChoices = minorVersions.map(minor => ({
+                name: `v${minor}.x`,
+                value: minor
+            }));
+
+            const minorAnswer = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'minor',
+                    message: `Select Angular ${majorAnswer.major} minor version:`,
+                    choices: minorChoices,
+                    pageSize: 15
+                }
+            ]);
+
+            // Step 3.3: Select Patch Version
+            const patchVersions = getPatchVersionsForMinor(angularVersions.versions, minorAnswer.minor);
+            const patchChoices = patchVersions.map(patch => {
+                let label = `v${patch}`;
+                if (patch === angularVersions.latest) label += ' (latest)';
+                if (patch === angularVersions.lts) label += ' (LTS)';
+                return { name: label, value: patch };
+            });
+
+            const patchAnswer = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'patch',
+                    message: `Select Angular ${minorAnswer.minor} patch version:`,
+                    choices: patchChoices,
+                    pageSize: 15
+                }
+            ]);
+
+            config.angularVersion = patchAnswer.patch;
         }
 
         console.log(chalk.green(`\n✓ Selected Angular version: ${config.angularVersion}\n`));
@@ -317,9 +357,9 @@ export async function runCli() {
             config.libraries = [];
 
             if (libraryMethod === 'interactive') {
-                config.libraries = await interactiveLibrarySearch();
+                config.libraries = await interactiveLibrarySearch(config.angularVersion);
             } else if (libraryMethod === 'manual') {
-                config.libraries = await simpleLibraryInput();
+                config.libraries = await simpleLibraryInput(config.angularVersion);
             } else if (libraryMethod === 'bundles') {
                 const bundleAnswer = await inquirer.prompt([
                     {
@@ -435,7 +475,20 @@ export async function runCli() {
         if (config.libraries.length > 0) {
             console.log(chalk.bold.cyan('\n📦 Installing additional libraries...\n'));
             
-            const librarySpecs = config.libraries.map(lib => 
+            // Resolve library versions for compatibility with Angular version
+            const resolvedLibraries = resolveLibraryVersions(config.libraries, config.angularVersion);
+            
+            // Show adjusted versions if any
+            const adjusted = resolvedLibraries.filter(lib => lib.adjusted);
+            if (adjusted.length > 0) {
+                console.log(chalk.yellow('⚠️  Adjusted library versions for Angular compatibility:\n'));
+                adjusted.forEach(lib => {
+                    console.log(chalk.gray(`   ${lib.name}: ${lib.originalVersion} → ${lib.version}`));
+                });
+                console.log('');
+            }
+            
+            const librarySpecs = resolvedLibraries.map(lib => 
                 lib.version === 'latest' ? lib.name : `${lib.name}@${lib.version}`
             );
 

@@ -144,3 +144,190 @@ export function needsAngularCli(currentAngularCliVersion, targetAngularVersion) 
         reason: 'Angular CLI version is compatible'
     };
 }
+
+/**
+ * Library compatibility matrix for Angular versions
+ * Maps popular libraries to compatible versions based on Angular major version
+ */
+export const LIBRARY_COMPATIBILITY_MATRIX = {
+    '@angular/material': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@angular/cdk': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@ng-bootstrap/ng-bootstrap': {
+        '18': '^17.0.0',
+        '17': '^16.0.0',
+        '16': '^14.0.0',
+        '15': '^13.0.0',
+        '14': '^12.0.0',
+        '13': '^10.0.0',
+        '12': '^10.0.0'
+    },
+    '@ngrx/store': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@ngrx/effects': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@ngrx/entity': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@ngrx/store-devtools': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@angular/pwa': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@angular/service-worker': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^16.0.0',
+        '15': '^15.0.0',
+        '14': '^14.0.0',
+        '13': '^13.0.0',
+        '12': '^12.0.0'
+    },
+    '@angular/fire': {
+        '18': '^18.0.0',
+        '17': '^17.0.0',
+        '16': '^7.6.0',
+        '15': '^7.5.0',
+        '14': '^7.4.0',
+        '13': '^7.2.0',
+        '12': '^7.0.0'
+    }
+};
+
+/**
+ * Get compatible version for a library based on Angular version
+ */
+export function getCompatibleLibraryVersion(libraryName, angularVersion) {
+    const angularMajor = angularVersion.split('.')[0];
+    
+    // Check if library is in compatibility matrix
+    if (LIBRARY_COMPATIBILITY_MATRIX[libraryName]) {
+        const compatibleVersion = LIBRARY_COMPATIBILITY_MATRIX[libraryName][angularMajor];
+        if (compatibleVersion) {
+            return compatibleVersion;
+        }
+    }
+    
+    // For Angular-scoped packages not in matrix, try to match version
+    if (libraryName.startsWith('@angular/')) {
+        return `^${angularMajor}.0.0`;
+    }
+    
+    // Default to latest for other packages
+    return 'latest';
+}
+
+/**
+ * Resolve library versions for compatibility with Angular
+ */
+export function resolveLibraryVersions(libraries, angularVersion) {
+    return libraries.map(lib => {
+        const requestedVersion = lib.version || 'latest';
+        
+        // If version is 'latest', try to find compatible version
+        if (requestedVersion === 'latest') {
+            const compatibleVersion = getCompatibleLibraryVersion(lib.name, angularVersion);
+            return {
+                ...lib,
+                version: compatibleVersion,
+                originalVersion: requestedVersion,
+                adjusted: compatibleVersion !== 'latest'
+            };
+        }
+        
+        // If a specific version is requested, keep it but flag potential incompatibility
+        return {
+            ...lib,
+            adjusted: false
+        };
+    });
+}
+
+/**
+ * Check if a library version is compatible with Angular version using semver
+ */
+export function checkLibraryCompatibility(peerDependency, angularVersion) {
+    if (!peerDependency || peerDependency === 'No Angular peer dependency') {
+        return { compatible: true, reason: 'No Angular peer dependency specified' };
+    }
+
+    try {
+        const angularMajor = angularVersion.split('.')[0];
+        
+        // Check if the peer dependency includes the Angular major version
+        const patterns = [
+            `^${angularMajor}.`,
+            `~${angularMajor}.`,
+            `>=${angularMajor}.`,
+            `${angularMajor}.x`,
+            `${angularMajor}.0.0`
+        ];
+
+        const isCompatible = patterns.some(pattern => peerDependency.includes(pattern));
+
+        if (isCompatible) {
+            return { 
+                compatible: true, 
+                reason: `Peer dependency '${peerDependency}' is compatible with Angular ${angularVersion}` 
+            };
+        } else {
+            return { 
+                compatible: false, 
+                reason: `Peer dependency requires '${peerDependency}' but Angular ${angularVersion} is being used` 
+            };
+        }
+    } catch (error) {
+        return { 
+            compatible: false, 
+            reason: `Error checking compatibility: ${error.message}` 
+        };
+    }
+}
