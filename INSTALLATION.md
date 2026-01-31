@@ -22,7 +22,7 @@ Before installing, ensure you have:
 Install the package globally to use `ng-init` command anywhere:
 
 ```bash
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 ```
 
 Verify installation:
@@ -35,7 +35,7 @@ ng-init --version
 Run without installing:
 
 ```bash
-npx ng-init
+npx @jatinmourya/ng-init
 ```
 
 This downloads and runs the latest version temporarily.
@@ -89,7 +89,7 @@ nvm version
 
 #### Install Angular Project Automator
 ```bash
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 ```
 
 ### macOS
@@ -111,7 +111,7 @@ npm install -g ng-init
 
 #### Install Angular Project Automator
 ```bash
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 ```
 
 ### Linux
@@ -139,9 +139,9 @@ nvm install --lts
 
 #### Install Angular Project Automator
 ```bash
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 # or with sudo if needed
-sudo npm install -g ng-init
+sudo npm install -g @jatinmourya/ng-init
 ```
 
 ## ✅ Verify Installation
@@ -171,14 +171,14 @@ Ensure this path is in your system PATH.
 
 **Solution 2**: Use npx instead
 ```bash
-npx ng-init
+npx @jatinmourya/ng-init
 ```
 
 ### Issue: Permission denied (Linux/macOS)
 
 **Solution 1**: Use sudo
 ```bash
-sudo npm install -g ng-init
+sudo npm install -g @jatinmourya/ng-init
 ```
 
 **Solution 2**: Fix npm permissions (recommended)
@@ -187,7 +187,7 @@ mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
 echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 ```
 
 ### Issue: Node version too old
@@ -206,12 +206,12 @@ nvm use --lts
 **Solution 1**: Clear npm cache
 ```bash
 npm cache clean --force
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 ```
 
 **Solution 2**: Use different registry
 ```bash
-npm install -g ng-init --registry https://registry.npmjs.org/
+npm install -g @jatinmourya/ng-init --registry https://registry.npmjs.org/
 ```
 
 ### Issue: Windows long path errors
@@ -226,7 +226,7 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name
 
 ### Update to Latest Version
 ```bash
-npm update -g ng-init
+npm update -g @jatinmourya/ng-init
 ```
 
 ### Check Current Version

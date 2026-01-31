@@ -337,13 +337,13 @@ ng-init/
 
 ### Global Installation
 ```bash
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 ng-init
 ```
 
 ### With npx
 ```bash
-npx ng-init
+npx @jatinmourya/ng-init
 ```
 
 ## ✨ Features Not in Original Spec (Bonus)

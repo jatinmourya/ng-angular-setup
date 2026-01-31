@@ -7,13 +7,13 @@ Get started with Angular Project Automator in minutes!
 ### Option 1: Global Installation (Recommended)
 
 ```bash
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 ```
 
 ### Option 2: Use with npx (No installation needed)
 
 ```bash
-npx ng-init
+npx @jatinmourya/ng-init
 ```
 
 ## 🚀 Create Your First Project
@@ -173,7 +173,7 @@ The CLI uses `npx @angular/cli` so you don't need Angular CLI globally installed
 
 ### "Permission denied" (Linux/macOS)
 ```bash
-sudo npm install -g ng-init
+sudo npm install -g @jatinmourya/ng-init
 ```
 
 ## 💡 Pro Tips

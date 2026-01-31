@@ -319,9 +319,9 @@ End
 
 ### Installation
 ```bash
-npm install -g ng-init
+npm install -g @jatinmourya/ng-init
 # or
-yarn global add ng-init
+yarn global add @jatinmourya/ng-init
 ```
 
 ### Usage
