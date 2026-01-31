@@ -2,7 +2,7 @@
 
 A comprehensive command-line interface (CLI) tool designed to automate and streamline the initialization of Angular projects with intelligent version management, interactive library search, and comprehensive prerequisite handling.
 
-[![npm version](https://img.shields.io/npm/v/ng-init.svg)](https://www.npmjs.com/package/@jatinmourya/ng-init)
+[![npm version](https://img.shields.io/npm/v/@jatinmourya/ng-init.svg)](https://www.npmjs.com/package/@jatinmourya/ng-init)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## ✨ Features
