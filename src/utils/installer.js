@@ -119,7 +119,7 @@ export async function installPackages(packages, projectPath, dev = false) {
         if (dev) args.push('--save-dev');
         args.push(...packages);
         
-        const { stdout, stderr } = await execa('npm', args, { 
+        await execa('npm', args, { 
             cwd: projectPath
         });
         
@@ -134,7 +134,7 @@ export async function installPackages(packages, projectPath, dev = false) {
             if (dev) args.push('--save-dev');
             args.push(...packages);
             
-            const { stdout, stderr } = await execa('npm', args, { 
+            await execa('npm', args, { 
                 cwd: projectPath
             });
             
@@ -175,7 +175,7 @@ export async function runNpmInstall(projectPath) {
     const spinner = ora('Installing dependencies...').start();
     
     try {
-        const { stdout, stderr } = await execa('npm', ['install'], { 
+        await execa('npm', ['install'], { 
             cwd: projectPath
         });
         
@@ -186,7 +186,7 @@ export async function runNpmInstall(projectPath) {
         
         // Retry with --legacy-peer-deps flag
         try {
-            const { stdout, stderr } = await execa('npm', ['install', '--legacy-peer-deps'], { 
+            await execa('npm', ['install', '--legacy-peer-deps'], { 
                 cwd: projectPath
             });
             

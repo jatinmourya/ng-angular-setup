@@ -6,7 +6,8 @@ const NPM_REGISTRY_URL = 'https://registry.npmjs.org';
 
 // Cache for npm registry responses to avoid repeated requests
 const packageCache = new Map();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const MAX_CACHE_SIZE = 100; // Maximum number of cached packages
 
 /**
  * Check if current Node version is compatible with Angular version
@@ -187,7 +188,7 @@ async function fetchPackageData(packageName) {
     const cacheKey = packageName;
     const cached = packageCache.get(cacheKey);
     
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
         return cached.data;
     }
     
@@ -197,6 +198,13 @@ async function fetchPackageData(packageName) {
         });
         
         const data = response.data;
+        
+        // Clean up old cache entries if cache is too large
+        if (packageCache.size >= MAX_CACHE_SIZE) {
+            const oldestKey = packageCache.keys().next().value;
+            packageCache.delete(oldestKey);
+        }
+        
         packageCache.set(cacheKey, { data, timestamp: Date.now() });
         return data;
     } catch (error) {

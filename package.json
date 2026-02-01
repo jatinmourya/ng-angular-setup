@@ -1,15 +1,24 @@
 {
   "name": "@jatinmourya/ng-init",
   "version": "1.1.1",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "description": "A comprehensive CLI tool to automate Angular project initialization with intelligent version management and prerequisite handling",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "build": "node build.js",
+    "prepublishOnly": "npm run build && npm run check-size",
+    "check-size": "npm pack --dry-run",
+    "check-contents": "npm pack && tar -tzf *.tgz && rm *.tgz"
   },
   "type": "module",
   "bin": {
-    "ng-init": "./src/index.js"
+    "ng-init": "./dist/index.js"
   },
   "keywords": [
     "angular",
@@ -44,13 +53,14 @@
     "chalk": "^5.3.0",
     "commander": "^13.1.0",
     "execa": "^9.6.1",
-    "inquirer": "^9.2.12",
-    "inquirer-autocomplete-prompt": "^3.0.1",
     "lodash.debounce": "^4.0.8",
     "ora": "^8.0.1",
     "semver": "^7.5.4"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.2"
   }
 }

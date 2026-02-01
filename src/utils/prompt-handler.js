@@ -1,11 +1,7 @@
-import inquirer from 'inquirer';
-import inquirerAutocomplete from 'inquirer-autocomplete-prompt';
+import { search, select, input, confirm } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { searchNpmPackages, getEnhancedPackageInfo, formatDownloads, getPackageVersions, getMajorVersions, getMinorVersionsForMajor, getPatchVersionsForMinor, getPackagePeerDependencies, findCompatiblePackageVersions } from './npm-search.js';
 import { checkLibraryCompatibility, isVersionCompatibleWithAngular, getAllCompatibleVersions } from './compatibility.js';
-
-// Register autocomplete prompt
-inquirer.registerPrompt('autocomplete', inquirerAutocomplete);
 
 /**
  * Interactive library search with autocomplete
@@ -22,31 +18,27 @@ export async function interactiveLibrarySearch(angularVersion = null) {
 
     while (continueSearching) {
         try {
-            const answer = await inquirer.prompt([
-                {
-                    type: 'autocomplete',
-                    name: 'package',
-                    message: 'Search for a library:',
-                    source: async (answersSoFar, input) => {
-                        if (!input || input.length < 2) {
-                            return [];
-                        }
+            const packageName = await search({
+                message: 'Search for a library:',
+                source: async (input, { signal }) => {
+                    if (!input || input.length < 2) {
+                        return [];
+                    }
 
-                        const results = await searchNpmPackages(input, 15);
-                        
-                        return results.map(pkg => ({
-                            name: formatPackageChoice(pkg),
-                            value: pkg.name,
-                            short: pkg.name
-                        }));
-                    },
-                    pageSize: 10
-                }
-            ]);
+                    const results = await searchNpmPackages(input, 15);
+                    
+                    return results.map(pkg => ({
+                        name: formatPackageChoice(pkg),
+                        value: pkg.name,
+                        description: pkg.description
+                    }));
+                },
+                pageSize: 10
+            });
 
-            if (answer.package) {
+            if (packageName) {
                 // Get detailed info
-                const info = await getEnhancedPackageInfo(answer.package);
+                const info = await getEnhancedPackageInfo(packageName);
                 
                 if (info) {
                     console.log(chalk.green(`\n✓ Selected: ${info.name}`));
@@ -55,23 +47,19 @@ export async function interactiveLibrarySearch(angularVersion = null) {
                     console.log(chalk.gray(`  Weekly downloads: ${formatDownloads(info.weeklyDownloads)}`));
 
                     // Ask for version selection method
-                    const versionMethodAnswer = await inquirer.prompt([
-                        {
-                            type: 'list',
-                            name: 'method',
-                            message: 'How would you like to select the version?',
-                            choices: [
-                                { name: `Use latest (${info.latestVersion})`, value: 'latest' },
-                                { name: 'Choose specific version (major.minor.patch)', value: 'specific' },
-                                { name: 'Enter version manually', value: 'manual' }
-                            ],
-                            default: 'latest'
-                        }
-                    ]);
+                    const versionMethod = await select({
+                        message: 'How would you like to select the version?',
+                        choices: [
+                            { name: `Use latest (${info.latestVersion})`, value: 'latest' },
+                            { name: 'Choose specific version (major.minor.patch)', value: 'specific' },
+                            { name: 'Enter version manually', value: 'manual' }
+                        ],
+                        default: 'latest'
+                    });
 
                     let version = info.latestVersion;
                     
-                    if (versionMethodAnswer.method === 'specific') {
+                    if (versionMethod === 'specific') {
                         // Fetch all versions for the package
                         console.log(chalk.cyan(`\n📦 Fetching versions for ${info.name}...\n`));
                         const packageVersions = await getPackageVersions(info.name);
@@ -91,35 +79,27 @@ export async function interactiveLibrarySearch(angularVersion = null) {
                                 };
                             });
 
-                            const majorAnswer = await inquirer.prompt([
-                                {
-                                    type: 'list',
-                                    name: 'major',
-                                    message: `Select ${info.name} major version:`,
-                                    choices: majorChoices,
-                                    pageSize: 15
-                                }
-                            ]);
+                            const majorVersion = await select({
+                                message: `Select ${info.name} major version:`,
+                                choices: majorChoices,
+                                pageSize: 15
+                            });
 
                             // Step 2: Select Minor Version
-                            const minorVersions = getMinorVersionsForMajor(packageVersions.versions, majorAnswer.major);
+                            const minorVersions = getMinorVersionsForMajor(packageVersions.versions, majorVersion);
                             const minorChoices = minorVersions.map(minor => ({
                                 name: `v${minor}.x`,
                                 value: minor
                             }));
 
-                            const minorAnswer = await inquirer.prompt([
-                                {
-                                    type: 'list',
-                                    name: 'minor',
-                                    message: `Select ${info.name} ${majorAnswer.major} minor version:`,
-                                    choices: minorChoices,
-                                    pageSize: 15
-                                }
-                            ]);
+                            const minorVersion = await select({
+                                message: `Select ${info.name} ${majorVersion} minor version:`,
+                                choices: minorChoices,
+                                pageSize: 15
+                            });
 
                             // Step 3: Select Patch Version
-                            const patchVersions = getPatchVersionsForMinor(packageVersions.versions, minorAnswer.minor);
+                            const patchVersions = getPatchVersionsForMinor(packageVersions.versions, minorVersion);
                             const patchChoices = patchVersions.map(patch => {
                                 let label = `v${patch}`;
                                 if (patch === packageVersions.latest) label += ' (latest)';
@@ -127,31 +107,22 @@ export async function interactiveLibrarySearch(angularVersion = null) {
                                 return { name: label, value: patch };
                             });
 
-                            const patchAnswer = await inquirer.prompt([
-                                {
-                                    type: 'list',
-                                    name: 'patch',
-                                    message: `Select ${info.name} ${minorAnswer.minor} patch version:`,
-                                    choices: patchChoices,
-                                    pageSize: 15
-                                }
-                            ]);
+                            const patchVersion = await select({
+                                message: `Select ${info.name} ${minorVersion} patch version:`,
+                                choices: patchChoices,
+                                pageSize: 15
+                            });
 
-                            version = patchAnswer.patch;
+                            version = patchVersion;
                         }
-                    } else if (versionMethodAnswer.method === 'manual') {
-                        const manualVersion = await inquirer.prompt([
-                            {
-                                type: 'input',
-                                name: 'version',
-                                message: 'Enter version:',
-                                default: info.latestVersion,
-                                validate: (input) => {
-                                    return input ? true : 'Version is required';
-                                }
+                    } else if (versionMethod === 'manual') {
+                        version = await input({
+                            message: 'Enter version:',
+                            default: info.latestVersion,
+                            validate: (inputValue) => {
+                                return inputValue ? true : 'Version is required';
                             }
-                        ]);
-                        version = manualVersion.version;
+                        });
                     }
 
                     // Check compatibility with Angular version if provided
@@ -171,16 +142,12 @@ export async function interactiveLibrarySearch(angularVersion = null) {
                             console.log(chalk.gray(`  ${compatibility.reason}\n`));
                             
                             // Suggest compatible versions
-                            const suggestAnswer = await inquirer.prompt([
-                                {
-                                    type: 'confirm',
-                                    name: 'suggest',
-                                    message: 'Would you like to see compatible versions?',
-                                    default: true
-                                }
-                            ]);
+                            const wantSuggestions = await confirm({
+                                message: 'Would you like to see compatible versions?',
+                                default: true
+                            });
 
-                            if (suggestAnswer.suggest) {
+                            if (wantSuggestions) {
                                 console.log(chalk.cyan(`\n🔍 Dynamically searching for compatible versions...\n`));
                                 // Use dynamic compatibility search
                                 const compatibleVersions = await getAllCompatibleVersions(info.name, angularVersion, 10);
@@ -193,40 +160,24 @@ export async function interactiveLibrarySearch(angularVersion = null) {
                                     
                                     versionChoices.push({ name: 'Keep selected version anyway', value: version });
 
-                                    const compatibleAnswer = await inquirer.prompt([
-                                        {
-                                            type: 'list',
-                                            name: 'version',
-                                            message: 'Select a compatible version:',
-                                            choices: versionChoices,
-                                            pageSize: 12
-                                        }
-                                    ]);
-
-                                    version = compatibleAnswer.version;
+                                    version = await select({
+                                        message: 'Select a compatible version:',
+                                        choices: versionChoices,
+                                        pageSize: 12
+                                    });
                                 } else {
                                     console.log(chalk.yellow('No compatible versions found automatically.'));
-                                    const keepAnswer = await inquirer.prompt([
-                                        {
-                                            type: 'confirm',
-                                            name: 'keep',
-                                            message: 'Continue with the selected version anyway?',
-                                            default: false
-                                        }
-                                    ]);
+                                    const keepVersion = await confirm({
+                                        message: 'Continue with the selected version anyway?',
+                                        default: false
+                                    });
 
-                                    if (!keepAnswer.keep) {
+                                    if (!keepVersion) {
                                         console.log(chalk.yellow('Skipping this library.\n'));
-                                        const continueAnswer = await inquirer.prompt([
-                                            {
-                                                type: 'confirm',
-                                                name: 'continue',
-                                                message: 'Add another library?',
-                                                default: true
-                                            }
-                                        ]);
-
-                                        continueSearching = continueAnswer.continue;
+                                        continueSearching = await confirm({
+                                            message: 'Add another library?',
+                                            default: true
+                                        });
                                         continue;
                                     }
                                 }
@@ -245,16 +196,10 @@ export async function interactiveLibrarySearch(angularVersion = null) {
             }
 
             // Ask if user wants to add more
-            const continueAnswer = await inquirer.prompt([
-                {
-                    type: 'confirm',
-                    name: 'continue',
-                    message: 'Add another library?',
-                    default: false
-                }
-            ]);
-
-            continueSearching = continueAnswer.continue;
+            continueSearching = await confirm({
+                message: 'Add another library?',
+                default: false
+            });
 
         } catch (error) {
             console.error(chalk.red('Error during library search:', error.message));
@@ -289,75 +234,59 @@ export async function simpleLibraryInput(angularVersion = null) {
     }
 
     while (continueAdding) {
-        const answer = await inquirer.prompt([
-            {
-                type: 'input',
-                name: 'library',
-                message: 'Enter library name (or press Enter to skip):',
-                validate: async (input) => {
-                    if (!input) return true;
-                    
-                    // Basic validation
-                    if (!input.match(/^[@a-z0-9-~][a-z0-9-._~]*$/)) {
-                        return 'Invalid package name format';
-                    }
-                    
-                    return true;
+        const library = await input({
+            message: 'Enter library name (or press Enter to skip):',
+            validate: async (inputValue) => {
+                if (!inputValue) return true;
+                
+                // Basic validation
+                if (!inputValue.match(/^[@a-z0-9-~][a-z0-9-._~]*$/)) {
+                    return 'Invalid package name format';
                 }
+                
+                return true;
             }
-        ]);
+        });
 
-        if (!answer.library) {
+        if (!library) {
             break;
         }
 
-        const versionAnswer = await inquirer.prompt([
-            {
-                type: 'input',
-                name: 'version',
-                message: `Enter version for ${answer.library} (or 'latest'):`,
-                default: 'latest'
-            }
-        ]);
-
-        const version = versionAnswer.version;
+        const version = await input({
+            message: `Enter version for ${library} (or 'latest'):`,
+            default: 'latest'
+        });
 
         // Check compatibility with Angular version if provided
         if (angularVersion && version !== 'latest') {
             console.log(chalk.cyan(`\n🔍 Checking compatibility with Angular ${angularVersion}...\n`));
             
             // Use dynamic compatibility check
-            const compatibility = await isVersionCompatibleWithAngular(answer.library, version, angularVersion);
+            const compatibility = await isVersionCompatibleWithAngular(library, version, angularVersion);
             
             if (compatibility.compatible) {
-                console.log(chalk.green(`✓ ${answer.library}@${version} is compatible with Angular ${angularVersion}`));
+                console.log(chalk.green(`✓ ${library}@${version} is compatible with Angular ${angularVersion}`));
                 if (compatibility.peerDependency) {
                     console.log(chalk.gray(`  Peer dependency: ${compatibility.peerDependency}\n`));
                 }
             } else {
-                console.log(chalk.red(`✗ ${answer.library}@${version} may not be compatible with Angular ${angularVersion}`));
+                console.log(chalk.red(`✗ ${library}@${version} may not be compatible with Angular ${angularVersion}`));
                 console.log(chalk.gray(`  ${compatibility.reason}\n`));
                 console.log(chalk.yellow('⚠️  This may cause installation issues. Consider using a different version.\n'));
             }
         }
 
         libraries.push({
-            name: answer.library,
+            name: library,
             version: version
         });
 
-        console.log(chalk.green(`✓ Added ${answer.library}@${version}\n`));
+        console.log(chalk.green(`✓ Added ${library}@${version}\n`));
 
-        const continueAnswer = await inquirer.prompt([
-            {
-                type: 'confirm',
-                name: 'continue',
-                message: 'Add another library?',
-                default: false
-            }
-        ]);
-
-        continueAdding = continueAnswer.continue;
+        continueAdding = await confirm({
+            message: 'Add another library?',
+            default: false
+        });
     }
 
     return libraries;
@@ -367,20 +296,16 @@ export async function simpleLibraryInput(angularVersion = null) {
  * Ask user for library search preference
  */
 export async function askLibrarySearchPreference() {
-    const answer = await inquirer.prompt([
-        {
-            type: 'list',
-            name: 'method',
-            message: 'How would you like to add libraries?',
-            choices: [
-                { name: 'Interactive search with autocomplete (Recommended)', value: 'interactive' },
-                { name: 'Manual entry', value: 'manual' },
-                { name: 'Choose from popular bundles', value: 'bundles' },
-                { name: 'Skip for now', value: 'skip' }
-            ],
-            default: 'interactive'
-        }
-    ]);
+    const method = await select({
+        message: 'How would you like to add libraries?',
+        choices: [
+            { name: 'Interactive search with autocomplete (Recommended)', value: 'interactive' },
+            { name: 'Manual entry', value: 'manual' },
+            { name: 'Choose from popular bundles', value: 'bundles' },
+            { name: 'Skip for now', value: 'skip' }
+        ],
+        default: 'interactive'
+    });
 
-    return answer.method;
+    return method;
 }

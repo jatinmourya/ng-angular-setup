@@ -1,4 +1,4 @@
-import inquirer from 'inquirer';
+import { select, input, confirm, checkbox } from '@inquirer/prompts';
 import chalk from 'chalk';
 import path from 'path';
 import { displaySystemVersions, getNodeVersion, isNvmInstalled, switchNodeVersion, installNodeVersion, getInstalledNodeVersions } from './utils/version-checker.js';
@@ -9,57 +9,52 @@ import { interactiveLibrarySearch, simpleLibraryInput, askLibrarySearchPreferenc
 import { PROJECT_TEMPLATES, LIBRARY_BUNDLES, CONFIG_PRESETS, PROJECT_STRUCTURE, GIT_CONFIG, DOC_TEMPLATES } from './templates/templates.js';
 import { initGitRepo, createGitignore, createInitialCommit, createProjectFolders, createProjectFiles, createReadme, createChangelog, validateDirectoryName, ensureDirectory, updatePackageJsonScripts } from './utils/file-utils.js';
 import { saveProfile, loadProfile, listProfiles, displayProfileInfo } from './utils/profile-manager.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
 export async function runCli() {
     try {
         // Display welcome banner
         console.log(chalk.bold.cyan('\n╔════════════════════════════════════════════════╗'));
-        console.log(chalk.bold.cyan('║   Angular Project Automation CLI v1.1.0        ║'));
+        console.log(chalk.bold.cyan(`║   Angular Project Automation CLI v${packageJson.version.padEnd(10)}║`));
         console.log(chalk.bold.cyan('╚════════════════════════════════════════════════╝\n'));
 
         // Step 1: Display system versions
         const systemVersions = await displaySystemVersions();
 
         // Step 2: Check for saved profiles
-        const useProfile = await inquirer.prompt([
-            {
-                type: 'confirm',
-                name: 'use',
-                message: 'Would you like to use a saved profile?',
-                default: false
-            }
-        ]);
+        const useProfile = await confirm({
+            message: 'Would you like to use a saved profile?',
+            default: false
+        });
 
         let config = {};
         
-        if (useProfile.use) {
+        if (useProfile) {
             const profiles = await listProfiles();
             
             if (profiles.length === 0) {
                 console.log(chalk.yellow('No saved profiles found. Continuing with manual setup...\n'));
             } else {
-                const profileAnswer = await inquirer.prompt([
-                    {
-                        type: 'list',
-                        name: 'profile',
-                        message: 'Select a profile:',
-                        choices: profiles
-                    }
-                ]);
+                const selectedProfile = await select({
+                    message: 'Select a profile:',
+                    choices: profiles.map(p => ({ name: p, value: p }))
+                });
 
-                const profile = await loadProfile(profileAnswer.profile);
-                displayProfileInfo(profileAnswer.profile, profile);
+                const profile = await loadProfile(selectedProfile);
+                displayProfileInfo(selectedProfile, profile);
                 
-                const confirmProfile = await inquirer.prompt([
-                    {
-                        type: 'confirm',
-                        name: 'confirm',
-                        message: 'Use this profile?',
-                        default: true
-                    }
-                ]);
+                const confirmProfile = await confirm({
+                    message: 'Use this profile?',
+                    default: true
+                });
 
-                if (confirmProfile.confirm) {
+                if (confirmProfile) {
                     config = profile;
                 }
             }
@@ -87,35 +82,27 @@ export async function runCli() {
                 };
             });
 
-            const majorAnswer = await inquirer.prompt([
-                {
-                    type: 'list',
-                    name: 'major',
-                    message: 'Select Angular major version:',
-                    choices: majorChoices,
-                    pageSize: 15
-                }
-            ]);
+            const majorVersion = await select({
+                message: 'Select Angular major version:',
+                choices: majorChoices,
+                pageSize: 15
+            });
 
             // Step 3.2: Select Minor Version
-            const minorVersions = getMinorVersionsForMajor(angularVersions.versions, majorAnswer.major);
+            const minorVersions = getMinorVersionsForMajor(angularVersions.versions, majorVersion);
             const minorChoices = minorVersions.map(minor => ({
                 name: `v${minor}.x`,
                 value: minor
             }));
 
-            const minorAnswer = await inquirer.prompt([
-                {
-                    type: 'list',
-                    name: 'minor',
-                    message: `Select Angular ${majorAnswer.major} minor version:`,
-                    choices: minorChoices,
-                    pageSize: 15
-                }
-            ]);
+            const minorVersion = await select({
+                message: `Select Angular ${majorVersion} minor version:`,
+                choices: minorChoices,
+                pageSize: 15
+            });
 
             // Step 3.3: Select Patch Version
-            const patchVersions = getPatchVersionsForMinor(angularVersions.versions, minorAnswer.minor);
+            const patchVersions = getPatchVersionsForMinor(angularVersions.versions, minorVersion);
             const patchChoices = patchVersions.map(patch => {
                 let label = `v${patch}`;
                 if (patch === angularVersions.latest) label += ' (latest)';
@@ -123,17 +110,13 @@ export async function runCli() {
                 return { name: label, value: patch };
             });
 
-            const patchAnswer = await inquirer.prompt([
-                {
-                    type: 'list',
-                    name: 'patch',
-                    message: `Select Angular ${minorAnswer.minor} patch version:`,
-                    choices: patchChoices,
-                    pageSize: 15
-                }
-            ]);
+            const patchVersion = await select({
+                message: `Select Angular ${minorVersion} patch version:`,
+                choices: patchChoices,
+                pageSize: 15
+            });
 
-            config.angularVersion = patchAnswer.patch;
+            config.angularVersion = patchVersion;
         }
 
         console.log(chalk.green(`\n✓ Selected Angular version: ${config.angularVersion}\n`));
@@ -160,17 +143,13 @@ export async function runCli() {
                 if (compatibleInstalled.length > 0) {
                     console.log(chalk.green(`Found ${compatibleInstalled.length} compatible Node version(s) installed:\n`));
                     
-                    const switchAnswer = await inquirer.prompt([
-                        {
-                            type: 'list',
-                            name: 'version',
-                            message: 'Select Node version to switch to:',
-                            choices: compatibleInstalled.map(v => ({ name: `v${v}`, value: v }))
-                        }
-                    ]);
+                    const selectedVersion = await select({
+                        message: 'Select Node version to switch to:',
+                        choices: compatibleInstalled.map(v => ({ name: `v${v}`, value: v }))
+                    });
 
-                    console.log(chalk.cyan(`\nSwitching to Node.js v${switchAnswer.version}...\n`));
-                    const switched = await switchNodeVersion(switchAnswer.version);
+                    console.log(chalk.cyan(`\nSwitching to Node.js v${selectedVersion}...\n`));
+                    const switched = await switchNodeVersion(selectedVersion);
 
                     if (!switched) {
                         console.log(chalk.red('Failed to switch Node version. Please try manually.'));
@@ -182,16 +161,12 @@ export async function runCli() {
                     console.log(chalk.yellow('No compatible Node versions installed.\n'));
                     const recommendedVersion = getRecommendedNodeVersion(nodeRequirement);
 
-                    const installAnswer = await inquirer.prompt([
-                        {
-                            type: 'confirm',
-                            name: 'install',
-                            message: `Install Node.js v${recommendedVersion}?`,
-                            default: true
-                        }
-                    ]);
+                    const shouldInstall = await confirm({
+                        message: `Install Node.js v${recommendedVersion}?`,
+                        default: true
+                    });
 
-                    if (installAnswer.install) {
+                    if (shouldInstall) {
                         const installed = await installNodeVersion(recommendedVersion);
                         
                         if (!installed) {
@@ -209,24 +184,20 @@ export async function runCli() {
             } else {
                 console.log(chalk.yellow('⚠️  nvm is not installed on your system\n'));
 
-                const installChoice = await inquirer.prompt([
-                    {
-                        type: 'list',
-                        name: 'method',
-                        message: 'How would you like to proceed?',
-                        choices: [
-                            { name: 'Install nvm (Recommended)', value: 'nvm' },
-                            { name: 'Install Node.js directly (Windows only)', value: 'direct' },
-                            { name: 'Exit and install manually', value: 'exit' }
-                        ]
-                    }
-                ]);
+                const installMethod = await select({
+                    message: 'How would you like to proceed?',
+                    choices: [
+                        { name: 'Install nvm (Recommended)', value: 'nvm' },
+                        { name: 'Install Node.js directly (Windows only)', value: 'direct' },
+                        { name: 'Exit and install manually', value: 'exit' }
+                    ]
+                });
 
-                if (installChoice.method === 'nvm') {
+                if (installMethod === 'nvm') {
                     displayNvmInstallGuide();
                     console.log(chalk.yellow('\nPlease install nvm and run this CLI again.\n'));
                     process.exit(0);
-                } else if (installChoice.method === 'direct') {
+                } else if (installMethod === 'direct') {
                     if (process.platform !== 'win32') {
                         console.log(chalk.red('Direct installation is only supported on Windows.'));
                         process.exit(1);
@@ -250,47 +221,31 @@ export async function runCli() {
 
         // Step 6: Project configuration
         if (!config.projectName) {
-            const projectAnswer = await inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'name',
-                    message: 'Enter project name:',
-                    validate: (value) => {
-                        if (!value) return 'Project name is required';
-                        const validation = validateDirectoryName(value);
-                        return validation === true ? true : validation;
-                    }
+            config.projectName = await input({
+                message: 'Enter project name:',
+                validate: (value) => {
+                    if (!value) return 'Project name is required';
+                    const validation = validateDirectoryName(value);
+                    return validation === true ? true : validation;
                 }
-            ]);
-
-            config.projectName = projectAnswer.name;
+            });
         }
 
         // Step 7: Project location
         if (!config.location) {
-            const locationAnswer = await inquirer.prompt([
-                {
-                    type: 'list',
-                    name: 'location',
-                    message: 'Where would you like to create the project?',
-                    choices: [
-                        { name: 'Current directory', value: 'current' },
-                        { name: 'Specify custom directory', value: 'custom' }
-                    ]
-                }
-            ]);
+            const location = await select({
+                message: 'Where would you like to create the project?',
+                choices: [
+                    { name: 'Current directory', value: 'current' },
+                    { name: 'Specify custom directory', value: 'custom' }
+                ]
+            });
 
-            if (locationAnswer.location === 'custom') {
-                const customPath = await inquirer.prompt([
-                    {
-                        type: 'input',
-                        name: 'path',
-                        message: 'Enter directory path:',
-                        default: process.cwd()
-                    }
-                ]);
-
-                config.location = customPath.path;
+            if (location === 'custom') {
+                config.location = await input({
+                    message: 'Enter directory path:',
+                    default: process.cwd()
+                });
             } else {
                 config.location = process.cwd();
             }
@@ -300,52 +255,44 @@ export async function runCli() {
 
         // Step 8: Select template (if not from profile)
         if (!config.template) {
-            const templateAnswer = await inquirer.prompt([
-                {
-                    type: 'list',
-                    name: 'template',
-                    message: 'Select project template:',
-                    choices: [
-                        ...Object.entries(PROJECT_TEMPLATES).map(([key, template]) => ({
-                            name: `${template.name} - ${template.description}`,
-                            value: key
-                        })),
-                        { name: 'Custom (configure manually)', value: 'custom' }
-                    ]
-                }
-            ]);
-
-            config.template = templateAnswer.template;
+            config.template = await select({
+                message: 'Select project template:',
+                choices: [
+                    ...Object.entries(PROJECT_TEMPLATES).map(([key, template]) => ({
+                        name: `${template.name} - ${template.description}`,
+                        value: key
+                    })),
+                    { name: 'Custom (configure manually)', value: 'custom' }
+                ]
+            });
 
             if (config.template === 'custom') {
-                const customOptions = await inquirer.prompt([
-                    {
-                        type: 'confirm',
-                        name: 'routing',
-                        message: 'Enable routing?',
-                        default: true
-                    },
-                    {
-                        type: 'list',
-                        name: 'style',
-                        message: 'Select stylesheet format:',
-                        choices: ['css', 'scss', 'sass', 'less']
-                    },
-                    {
-                        type: 'confirm',
-                        name: 'strict',
-                        message: 'Enable strict mode?',
-                        default: true
-                    },
-                    {
-                        type: 'confirm',
-                        name: 'standalone',
-                        message: 'Use standalone components?',
-                        default: false
-                    }
-                ]);
+                const routing = await confirm({
+                    message: 'Enable routing?',
+                    default: true
+                });
 
-                config.options = customOptions;
+                const style = await select({
+                    message: 'Select stylesheet format:',
+                    choices: [
+                        { name: 'css', value: 'css' },
+                        { name: 'scss', value: 'scss' },
+                        { name: 'sass', value: 'sass' },
+                        { name: 'less', value: 'less' }
+                    ]
+                });
+
+                const strict = await confirm({
+                    message: 'Enable strict mode?',
+                    default: true
+                });
+
+                const standalone = await confirm({
+                    message: 'Use standalone components?',
+                    default: false
+                });
+
+                config.options = { routing, style, strict, standalone };
             } else {
                 config.options = PROJECT_TEMPLATES[config.template].options;
             }
@@ -361,19 +308,15 @@ export async function runCli() {
             } else if (libraryMethod === 'manual') {
                 config.libraries = await simpleLibraryInput(config.angularVersion);
             } else if (libraryMethod === 'bundles') {
-                const bundleAnswer = await inquirer.prompt([
-                    {
-                        type: 'checkbox',
-                        name: 'bundles',
-                        message: 'Select library bundles:',
-                        choices: Object.entries(LIBRARY_BUNDLES).map(([key, bundle]) => ({
-                            name: `${bundle.name} - ${bundle.description}`,
-                            value: key
-                        }))
-                    }
-                ]);
+                const selectedBundles = await checkbox({
+                    message: 'Select library bundles:',
+                    choices: Object.entries(LIBRARY_BUNDLES).map(([key, bundle]) => ({
+                        name: `${bundle.name} - ${bundle.description}`,
+                        value: key
+                    }))
+                });
 
-                for (const bundleKey of bundleAnswer.bundles) {
+                for (const bundleKey of selectedBundles) {
                     const bundle = LIBRARY_BUNDLES[bundleKey];
                     if (bundle.packages) {
                         config.libraries.push(...bundle.packages);
@@ -396,50 +339,46 @@ export async function runCli() {
                 }));
                 config.libraries.push(...templateLibs);
             }
+            
+            // Add template-specific dev packages
+            if (config.template !== 'custom' && PROJECT_TEMPLATES[config.template].devPackages) {
+                const templateDevLibs = PROJECT_TEMPLATES[config.template].devPackages.map(name => ({
+                    name,
+                    version: 'latest',
+                    isDev: true
+                }));
+                config.libraries.push(...templateDevLibs);
+            }
         }
 
         // Step 10: Additional features (if not from profile)
         if (!config.features) {
-            const featuresAnswer = await inquirer.prompt([
-                {
-                    type: 'checkbox',
-                    name: 'features',
-                    message: 'Select additional features:',
-                    choices: [
-                        { name: 'Git initialization', value: 'git', checked: true },
-                        { name: 'Create project structure', value: 'structure', checked: true },
-                        { name: 'Generate README.md', value: 'readme', checked: true },
-                        { name: 'Generate CHANGELOG.md', value: 'changelog', checked: false },
-                        { name: 'ESLint + Prettier setup', value: 'eslint', checked: false },
-                        { name: 'Husky pre-commit hooks', value: 'husky', checked: false }
-                    ]
-                }
-            ]);
-
-            config.features = featuresAnswer.features;
+            config.features = await checkbox({
+                message: 'Select additional features:',
+                choices: [
+                    { name: 'Git initialization', value: 'git', checked: true },
+                    { name: 'Create project structure', value: 'structure', checked: true },
+                    { name: 'Generate README.md', value: 'readme', checked: true },
+                    { name: 'Generate CHANGELOG.md', value: 'changelog', checked: false },
+                    { name: 'ESLint + Prettier setup', value: 'eslint', checked: false },
+                    { name: 'Husky pre-commit hooks', value: 'husky', checked: false }
+                ]
+            });
         }
 
         // Step 11: Save profile option
-        const saveProfileAnswer = await inquirer.prompt([
-            {
-                type: 'confirm',
-                name: 'save',
-                message: 'Save this configuration as a profile?',
-                default: false
-            }
-        ]);
+        const shouldSaveProfile = await confirm({
+            message: 'Save this configuration as a profile?',
+            default: false
+        });
 
-        if (saveProfileAnswer.save) {
-            const profileNameAnswer = await inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'name',
-                    message: 'Enter profile name:',
-                    validate: (value) => value ? true : 'Profile name is required'
-                }
-            ]);
+        if (shouldSaveProfile) {
+            const profileName = await input({
+                message: 'Enter profile name:',
+                validate: (value) => value ? true : 'Profile name is required'
+            });
 
-            await saveProfile(profileNameAnswer.name, config);
+            await saveProfile(profileName, config);
         }
 
         // Step 12: Confirm and create project
@@ -453,16 +392,12 @@ export async function runCli() {
         console.log(chalk.white('Features:         ') + chalk.cyan(config.features.join(', ')));
         console.log(chalk.gray('━'.repeat(50)) + '\n');
 
-        const confirmAnswer = await inquirer.prompt([
-            {
-                type: 'confirm',
-                name: 'confirm',
-                message: 'Create project with this configuration?',
-                default: true
-            }
-        ]);
+        const shouldCreate = await confirm({
+            message: 'Create project with this configuration?',
+            default: true
+        });
 
-        if (!confirmAnswer.confirm) {
+        if (!shouldCreate) {
             console.log(chalk.yellow('Project creation cancelled.\n'));
             process.exit(0);
         }
@@ -515,13 +450,27 @@ export async function runCli() {
                 console.log('');
             }
             
-            console.log(chalk.bold.cyan('📦 Installing additional libraries...\n'));
+            // Separate production and dev packages
+            const prodLibraries = resolvedLibraries.filter(lib => !lib.isDev);
+            const devLibraries = resolvedLibraries.filter(lib => lib.isDev);
             
-            const librarySpecs = resolvedLibraries.map(lib => 
-                lib.version === 'latest' ? lib.name : `${lib.name}@${lib.version}`
-            );
-
-            await installPackages(librarySpecs, projectPath);
+            // Install production packages
+            if (prodLibraries.length > 0) {
+                console.log(chalk.bold.cyan('📦 Installing production libraries...\n'));
+                const prodSpecs = prodLibraries.map(lib => 
+                    lib.version === 'latest' ? lib.name : `${lib.name}@${lib.version}`
+                );
+                await installPackages(prodSpecs, projectPath);
+            }
+            
+            // Install dev packages
+            if (devLibraries.length > 0) {
+                console.log(chalk.bold.cyan('📦 Installing dev libraries...\n'));
+                const devSpecs = devLibraries.map(lib => 
+                    lib.version === 'latest' ? lib.name : `${lib.name}@${lib.version}`
+                );
+                await installPackages(devSpecs, projectPath, true);
+            }
         }
 
         // Step 15: Run npm install

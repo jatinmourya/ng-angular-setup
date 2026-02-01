@@ -4,13 +4,20 @@ import { Command } from 'commander';
 import { runCli } from './runner.js';
 import { listProfiles, loadProfile, deleteProfile, displayProfileInfo, exportProfile, importProfile } from './utils/profile-manager.js';
 import chalk from 'chalk';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
 const program = new Command();
 
 program
     .name('ng-init')
     .description('Angular project initializer with intelligent version management and automation')
-    .version('1.1.0');
+    .version(packageJson.version);
 
 // Main command - create new project
 program

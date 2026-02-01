@@ -179,6 +179,11 @@ export function validateDirectoryName(name) {
         return 'Directory name is too long';
     }
 
+    // Check for trailing spaces or periods (Windows restriction)
+    if (name.endsWith(' ') || name.endsWith('.')) {
+        return 'Directory name cannot end with a space or period';
+    }
+
     return true;
 }
 

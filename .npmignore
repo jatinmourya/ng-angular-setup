@@ -6,6 +6,13 @@ CHANGELOG.md
 QUICK_START.md
 INSTALLATION.md
 
+# Source files (using built dist/ instead)
+src/
+
+# Build files
+build.js
+*.tgz
+
 # Git files
 .git
 .gitignore
@@ -60,3 +67,15 @@ lerna-debug.log*
 .editorconfig
 tsconfig.json
 *.tgz
+
+# Additional optimizations
+*.md.backup
+*.orig
+.npmrc
+.yarnrc
+renovate.json
+.dependabot/
+examples/
+docs/
+screenshots/
+.husky/
