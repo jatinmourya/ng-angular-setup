@@ -51,9 +51,8 @@ export async function isNvmInstalled() {
  */
 export async function getAngularCliVersion() {
     try {
-        const { stdout } = await execa('ng', ['version', '--json'], { shell: true });
-        const json = JSON.parse(stdout);
-        return json.cli.version || null;
+        const { stdout } = await execa('ng', ['--version'], { shell: true });
+        return stdout.trim() || null;
     } catch (error) {
         return null;
     }
