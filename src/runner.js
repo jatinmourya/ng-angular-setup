@@ -21,7 +21,7 @@ export async function runCli() {
     try {
         // Display welcome banner
         console.log(chalk.bold.cyan('\n╔════════════════════════════════════════════════╗'));
-        console.log(chalk.bold.cyan(`║   Angular Project Automation CLI v${packageJson.version.padEnd(10)}║`));
+        console.log(chalk.bold.cyan(`║   Angular Project Automation CLI v${packageJson.version.padEnd(13)}║`));
         console.log(chalk.bold.cyan('╚════════════════════════════════════════════════╝\n'));
 
         // Step 1: Display system versions

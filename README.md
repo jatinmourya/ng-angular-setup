@@ -34,14 +34,14 @@ A comprehensive command-line interface (CLI) tool designed to automate and strea
   - Version selection (latest or specific)
   - Multiple library queue management
 
-- ** Dynamic Library Version Resolution **
+- **Dynamic Library Version Resolution**
   - Automatically resolves compatible versions based on Angular version
   - Checks peer dependencies from npm registry
   - Matches major versions for Angular-scoped packages
   - Displays compatibility warnings
   - Caches npm responses for performance
 
-- ** 📦 Popular Library Bundles **
+- **📦 Popular Library Bundles**
   - UI Framework Bundle (Material + CDK + Flex Layout)
   - State Management Bundle (NgRx suite)
   - Form & Validation Bundle
