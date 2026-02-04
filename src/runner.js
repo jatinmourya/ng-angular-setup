@@ -544,9 +544,6 @@ export async function runCli() {
 
     } catch (err) {
         console.error(chalk.red('\n❌ Error:'), err.message);
-        if (err.stack) {
-            console.error(chalk.gray(err.stack));
-        }
         process.exit(1);
     }
 }

@@ -27,32 +27,59 @@ export async function installNodeWithWinget(version = 'LTS') {
  */
 export function getNvmInstallInstructions() {
     const os = platform();
-    
-    if (os === 'win32') {
-        return {
-            os: 'Windows',
-            method: 'Download and install',
-            url: 'https://github.com/coreybutler/nvm-windows/releases',
-            command: null,
-            description: 'Download the nvm-setup.zip file from the releases page and run the installer.'
-        };
-    } else if (os === 'darwin') {
-        return {
-            os: 'macOS',
-            method: 'Using curl',
-            url: 'https://github.com/nvm-sh/nvm',
-            command: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash',
-            description: 'Run the curl command in your terminal to install nvm.'
-        };
-    } else {
-        return {
-            os: 'Linux',
-            method: 'Using curl or wget',
-            url: 'https://github.com/nvm-sh/nvm',
-            command: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash',
-            alternativeCommand: 'wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash',
-            description: 'Run either the curl or wget command in your terminal to install nvm.'
-        };
+
+    switch (os) {
+        case 'win32':
+            return {
+                os: 'Windows',
+                download: 'https://github.com/coreybutler/nvm-windows/releases',
+                steps: [
+                    'Download nvm-setup.exe',
+                    'Run the installer',
+                    'Restart your terminal'
+                ]
+            };
+
+        case 'darwin':
+            return {
+                os: 'macOS',
+                repo: 'https://github.com/nvm-sh/nvm',
+
+                install:
+                    'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash',
+
+                postInstall: [
+                    'Restart terminal',
+                    'If using zsh: source ~/.zshrc',
+                    'If using bash: source ~/.bash_profile'
+                ],
+
+                steps: [
+                    'Run the install command',
+                    'Reload your shell configuration',
+                    'Verify: nvm --version',
+                    'Install Node: nvm install node'
+                ]
+            };
+
+        default:
+            return {
+                os: 'Linux',
+                repo: 'https://github.com/nvm-sh/nvm',
+
+                install:
+                    'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash',
+
+                alternative:
+                    'wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash',
+
+                steps: [
+                    'Run install command',
+                    'Restart terminal or run: source ~/.bashrc',
+                    'Verify: nvm --version',
+                    'Install Node: nvm install node'
+                ]
+            };
     }
 }
 
@@ -60,33 +87,61 @@ export function getNvmInstallInstructions() {
  * Display nvm installation guide
  */
 export function displayNvmInstallGuide() {
-    const instructions = getNvmInstallInstructions();
-    
-    console.log(chalk.bold.yellow('\n📚 nvm Installation Guide\n'));
+    const data = getNvmInstallInstructions();
+
+    console.log(chalk.bold.yellow('\n📚 NVM Installation Guide\n'));
     console.log(chalk.gray('━'.repeat(50)));
-    console.log(chalk.white('Operating System: ') + chalk.cyan(instructions.os));
-    console.log(chalk.white('Method:           ') + chalk.cyan(instructions.method));
-    console.log(chalk.white('URL:              ') + chalk.blue(instructions.url));
-    
-    if (instructions.command) {
-        console.log(chalk.white('\nCommand:'));
-        console.log(chalk.green(`  ${instructions.command}`));
-        
-        if (instructions.alternativeCommand) {
-            console.log(chalk.white('\nAlternative:'));
-            console.log(chalk.green(`  ${instructions.alternativeCommand}`));
-        }
+
+    // OS
+    console.log(chalk.white('OS: ') + chalk.cyan(data.os));
+
+    // Download / Repo
+    if (data.download) {
+        console.log(chalk.white('Download: ') + chalk.blue(data.download));
     }
-    
-    console.log(chalk.white('\nDescription:'));
-    console.log(chalk.gray(`  ${instructions.description}`));
-    console.log(chalk.gray('━'.repeat(50)) + '\n');
-    
-    console.log(chalk.yellow('💡 Benefits of using nvm:'));
+
+    if (data.repo) {
+        console.log(chalk.white('Repository: ') + chalk.blue(data.repo));
+    }
+
+    // Install command
+    if (data.install) {
+        console.log(chalk.white('\nInstall Command:'));
+        console.log(chalk.green(`  ${data.install}`));
+    }
+
+    // Alternative
+    if (data.alternative) {
+        console.log(chalk.white('\nAlternative Command:'));
+        console.log(chalk.green(`  ${data.alternative}`));
+    }
+
+    // Steps
+    if (Array.isArray(data.steps)) {
+        console.log(chalk.white('\nSteps:'));
+
+        data.steps.forEach((step, i) => {
+            console.log(chalk.gray(`  ${i + 1}. ${step}`));
+        });
+    }
+
+    // Post-install (macOS mainly)
+    if (Array.isArray(data.postInstall)) {
+        console.log(chalk.white('\nPost-Install:'));
+
+        data.postInstall.forEach((step, i) => {
+            console.log(chalk.gray(`  ${i + 1}. ${step}`));
+        });
+    }
+
+    console.log(chalk.gray('━'.repeat(50)));
+
+    // Benefits
+    console.log(chalk.yellow('\n💡 Why use NVM?'));
     console.log(chalk.gray('  • Manage multiple Node.js versions'));
-    console.log(chalk.gray('  • Switch between versions easily'));
-    console.log(chalk.gray('  • No admin/sudo required for installations'));
-    console.log(chalk.gray('  • Project-specific Node versions\n'));
+    console.log(chalk.gray('  • Switch instantly'));
+    console.log(chalk.gray('  • No sudo/admin required'));
+    console.log(chalk.gray('  • Per-project Node versions\n'));
 }
 
 /**
