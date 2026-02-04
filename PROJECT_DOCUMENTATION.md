@@ -234,15 +234,14 @@ After project creation:
 
 ### Technology Stack
 - **Runtime**: Node.js (v18+)
-- **Language**: JavaScript/TypeScript
-- **CLI Framework**: Commander.js or Yargs
-- **Interactive Prompts**: Inquirer.js or Prompts
-- **Autocomplete**: inquirer-autocomplete-prompt or autocomplete-prompt
-- **HTTP Requests**: Axios or node-fetch
+- **Language**: JavaScript (ES Modules)
+- **CLI Framework**: Commander.js
+- **Interactive Prompts**: @inquirer/prompts
+- **HTTP Requests**: Axios
 - **Debouncing**: lodash.debounce (for search optimization)
 - **Spinners/Progress**: Ora
 - **Styling**: Chalk for colored output
-- **Validation**: Validator.js
+- **Version Comparison**: Semver
 
 ### API Integrations
 - **npm Registry API**: https://registry.npmjs.org/@angular/cli
@@ -255,17 +254,18 @@ After project creation:
 ### File Structure
 ```
 src/
-├── commands/          # CLI command handlers
-├── utils/             # Helper functions
-│   ├── version-checker.js
-│   ├── compatibility.js
-│   ├── installer.js
-│   ├── npm-search.js      # npm registry search & validation
-│   ├── package-resolver.js # Dependency resolution
-│   └── prompt-handler.js
-├── templates/         # Project templates
-├── config/            # Configuration presets
-└── index.js           # Entry point
+├── index.js               # CLI entry point
+├── runner.js              # Main CLI flow
+├── utils/                 # Helper functions
+│   ├── version-checker.js    # Version detection
+│   ├── compatibility.js      # Compatibility checking
+│   ├── installer.js          # Package installation
+│   ├── npm-search.js         # npm registry search
+│   ├── prompt-handler.js     # Interactive prompts
+│   ├── file-utils.js         # File operations
+│   └── profile-manager.js    # Profile management
+└── templates/             # Project templates
+    └── templates.js          # Template definitions
 ```
 
 ---
@@ -354,15 +354,13 @@ ng-init --template=enterprise --version=17.0.0
 ### Phase 3 ✅ COMPLETE
 - ✅ Git integration
 - ✅ Profile management
-- ⏳ Migration assistant (planned)
-- ⏳ Multi-language support (planned)
-
-### Phase 3.5 ✅ NEW (v1.1.0)
 - ✅ Dynamic library version resolution
 - ✅ npm registry peer dependency checking
 - ✅ Package response caching
 - ✅ Compatibility warnings display
 - ✅ Three-step Angular version selection (major/minor/patch)
+- ⏳ Migration assistant (planned)
+- ⏳ Multi-language support (planned)
 
 ### Phase 4 (Planned)
 - 📊 Dashboard/Analytics
@@ -388,4 +386,4 @@ MIT License - See [LICENSE](./LICENSE) for details.
 
 ---
 
-**Last Updated**: January 31, 2026
+**Last Updated**: February 4, 2026

@@ -2,7 +2,7 @@
 
 ## 🎯 Project Overview
 
-A comprehensive CLI application (v1.1.0) that automates Angular project initialization with intelligent version management, dynamic library version resolution, interactive library search, and complete prerequisite handling. This implementation includes **ALL** features from the PROJECT_DOCUMENTATION.md file plus advanced dynamic compatibility features.
+A comprehensive CLI application that automates Angular project initialization with intelligent version management, dynamic library version resolution, interactive library search, and complete prerequisite handling. This implementation includes **ALL** features from the PROJECT_DOCUMENTATION.md file plus advanced dynamic compatibility features.
 
 ## ✅ Implemented Features
 
@@ -33,9 +33,9 @@ A comprehensive CLI application (v1.1.0) that automates Angular project initiali
   - Validates current Node.js against requirements
   - Displays compatibility status with visual indicators
   - Provides detailed error messages
-  - **NEW in v1.1.0**: Dynamic library version resolution
-  - **NEW in v1.1.0**: npm registry peer dependency checking
-  - **NEW in v1.1.0**: Package caching (5-minute TTL)
+  - Dynamic library version resolution
+  - npm registry peer dependency checking
+  - Package caching (5-minute TTL)
 
 #### 4. Smart Node Version Management ✓
 - **Location**: `src/utils/version-checker.js`
@@ -96,7 +96,7 @@ A comprehensive CLI application (v1.1.0) that automates Angular project initiali
   - Multiple library queue
   - Version selection (latest or manual)
 
-#### 9.1. Dynamic Library Version Resolution ✓ (NEW in v1.1.0)
+#### 9.1. Dynamic Library Version Resolution ✓
 - **Location**: `src/utils/compatibility.js`
 - **Features**:
   - `resolveLibraryVersionsAsync()` - Resolves compatible versions for all libraries
@@ -221,14 +221,14 @@ ng-init/
 │   │   └── profile-manager.js       # Profile management
 │   └── templates/
 │       └── templates.js             # All templates, bundles, presets
-├── package.json                     # Package configuration
-├── README.md                        # Main documentation
-├── QUICK_START.md                   # Quick start guide
-├── PROJECT_DOCUMENTATION.md         # Original specification
-├── CONTRIBUTING.md                  # Contribution guidelines
-├── CHANGELOG.md                     # Version history
-├── LICENSE                          # MIT License
-└── .gitignore                       # Git ignore rules
+├── build.js                          # Build script for production
+├── package.json                      # Package configuration
+├── README.md                         # Main documentation
+├── QUICK_START.md                    # Quick start guide
+├── PROJECT_DOCUMENTATION.md          # Original specification
+├── CONTRIBUTING.md                   # Contribution guidelines
+├── CHANGELOG.md                      # Version history
+└── LICENSE                           # MIT License
 ```
 
 ## 🎯 CLI Commands
@@ -251,13 +251,11 @@ ng-init/
 ## 📦 Dependencies
 
 ### Production Dependencies
-- **@inquirer/prompts** (^7.10.1) - Simple prompts
+- **@inquirer/prompts** (^7.10.1) - Interactive prompts
 - **axios** (^1.6.5) - HTTP requests to npm registry
 - **chalk** (^5.3.0) - Terminal color output
 - **commander** (^13.1.0) - CLI framework
 - **execa** (^9.6.1) - Execute shell commands
-- **inquirer** (^9.2.12) - Interactive prompts
-- **inquirer-autocomplete-prompt** (^3.0.1) - Autocomplete
 - **lodash.debounce** (^4.0.8) - Search debouncing
 - **ora** (^8.0.1) - Spinners and progress
 - **semver** (^7.5.4) - Version comparison and compatibility checking
@@ -336,7 +334,7 @@ ng-init/
 - Guided installation process
 - **NEW**: Dynamic library version resolution
 
-### Dynamic Library Compatibility (v1.1.0)
+### Dynamic Library Compatibility
 - Automatically resolves compatible library versions for Angular
 - Checks peer dependencies from npm registry
 - Matches major versions for Angular-scoped packages
@@ -385,8 +383,8 @@ npx @jatinmourya/ng-init
 6. **Progress Indicators** - Spinners with ora
 7. **Validation Functions** - Input validation everywhere
 8. **Multiple Export Formats** - Profile export/import
-9. **Dynamic Version Resolution** (v1.1.0) - Automatic library compatibility
-10. **npm Registry Caching** (v1.1.0) - Performance optimization
+9. **Dynamic Version Resolution** - Automatic library compatibility
+10. **npm Registry Caching** - Performance optimization
 
 ## 📊 Success Metrics
 
@@ -409,7 +407,7 @@ npx @jatinmourya/ng-init
 ✅ CLI commands and utilities
 ✅ Error handling and validation
 ✅ User experience enhancements
-✅ Dynamic library version resolution (v1.1.0)
+✅ Dynamic library version resolution
 
 ## 📝 Documentation
 
@@ -441,4 +439,4 @@ The tool is ready for:
 
 **Built with ❤️ following the complete PROJECT_DOCUMENTATION.md specification**
 
-Last Updated: January 31, 2026
+Last Updated: February 4, 2026

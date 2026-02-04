@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-02-04
+
+### Changed
+- Updated documentation for accuracy
+- Streamlined dependencies (removed unused packages)
+- Improved build process with esbuild
+
+### Fixed
+- Documentation now reflects actual project structure
+- Corrected dependency list in documentation
+
+---
+
 ## [1.1.0] - 2026-01-31
 
 ### Added
@@ -16,10 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Three-step Angular Version Selection** - Select major → minor → patch versions interactively
 
 ### Changed
-- Updated version to 1.1.0
 - Improved library installation process with resolved versions display
 - Enhanced compatibility checking with semver validation
-- Updated CLI banner to show version 1.1.0
 
 ### Fixed
 - Library versions now properly resolve for Angular compatibility instead of defaulting to 'latest'
@@ -87,8 +98,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chalk: ^5.3.0
 - commander: ^13.1.0
 - execa: ^9.6.1
-- inquirer: ^9.2.12
-- inquirer-autocomplete-prompt: ^3.0.1
 - lodash.debounce: ^4.0.8
 - ora: ^8.0.1
 - semver: ^7.5.4
@@ -128,19 +137,19 @@ The tool automates the entire project setup process, from checking system prereq
 
 ### Future Plans
 
-#### Phase 2 (Planned)
-- Enhanced library bundles
-- More project templates
-- Additional configuration presets
-- Improved documentation generation
+#### Phase 2 (Completed)
+- ✅ Enhanced library bundles
+- ✅ More project templates
+- ✅ Additional configuration presets
+- ✅ Improved documentation generation
 
-#### Phase 3 (Planned)
-- Advanced Git integration
-- Enhanced profile management
-- Migration assistant
-- Multi-language support
+### Phase 3 (Completed)
+- ✅ Advanced Git integration
+- ✅ Enhanced profile management
+- ⏳ Migration assistant (planned)
+- ⏳ Multi-language support (planned)
 
-#### Phase 4 (Planned)
+### Phase 4 (Planned)
 - Dashboard/Analytics
 - Update notifications
 - Cloud sync features
@@ -148,5 +157,6 @@ The tool automates the entire project setup process, from checking system prereq
 
 ---
 
+[1.2.3]: https://github.com/jatinmourya/ng-init/releases/tag/v1.2.3
 [1.1.0]: https://github.com/jatinmourya/ng-init/releases/tag/v1.1.0
 [1.0.0]: https://github.com/jatinmourya/ng-init/releases/tag/v1.0.0

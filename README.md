@@ -409,7 +409,7 @@ flowchart TB
 ```
 ng-init/
 ├── src/
-│   ├── index.js               # CLI entry point (v1.1.0)
+│   ├── index.js               # CLI entry point
 │   ├── runner.js              # Main CLI flow
 │   ├── utils/                 # Helper functions
 │   │   ├── version-checker.js    # Version detection and management
@@ -421,6 +421,7 @@ ng-init/
 │   │   └── profile-manager.js    # Profile management
 │   └── templates/             # Project templates
 │       └── templates.js          # Template definitions
+├── build.js                   # Build script for production
 ├── package.json
 └── README.md
 ```
@@ -495,4 +496,4 @@ For detailed documentation, visit [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTA
 
 **Made with ❤️ by the Angular community**
 
-**Last Updated**: January 31, 2026
+**Last Updated**: February 4, 2026

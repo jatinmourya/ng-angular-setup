@@ -160,7 +160,7 @@ When you create a project, you get:
 - **Utilities** - Lodash, date-fns, RxJS
 - **HTTP & API** - HTTP client and tools
 
-## Dynamic Version Resolution (v1.1.0)
+## Dynamic Version Resolution
 
 The CLI automatically resolves compatible library versions:
 - ✅ Checks peer dependencies from npm registry
