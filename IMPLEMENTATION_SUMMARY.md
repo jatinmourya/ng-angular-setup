@@ -266,54 +266,58 @@ ng-init/
 
 ## 🔄 User Flow
 
-```
-1. Start CLI → Display System Versions
-2. ↓
-3. Check for Saved Profiles → Load Profile (optional)
-4. ↓
-5. Select Angular Version from npm Registry
-6. ↓
-7. Check Node.js Compatibility
-8. ↓
-9. If Incompatible:
-   - nvm installed? → Switch/Install Node Version
-   - nvm not installed? → Guide Installation
-10. ↓
-11. Configure Project (Name, Location)
-12. ↓
-13. Select Template (Basic, Enterprise, PWA, etc.)
-14. ↓
-15. Library Selection:
-    - Interactive Search (autocomplete)
-    - Manual Entry
-    - Library Bundles
-    - Skip
-16. ↓
-17. Additional Features (Git, ESLint, Husky, Docs)
-18. ↓
-19. Save Profile? (optional)
-20. ↓
-21. Confirm Configuration
-22. ↓
-23. Create Angular Project
-24. ↓
-25. Install Libraries
-26. ↓
-27. Run npm install
-28. ↓
-29. Create Project Structure
-30. ↓
-31. Initialize Git
-32. ↓
-33. Generate Documentation
-34. ↓
-35. Setup ESLint/Prettier
-36. ↓
-37. Setup Husky
-38. ↓
-39. Create Initial Commit
-40. ↓
-41. Display Success & Next Steps
+```mermaid
+flowchart TD
+    A["1. Start CLI"] --> B["2. Display System Versions"]
+    B --> C{"3. Check for Saved Profiles"}
+    C -->|"Yes"| D["Load Profile"]
+    C -->|"No"| E["5. Select Angular Version<br/>from npm Registry"]
+    D --> E
+    
+    E --> F["7. Check Node.js Compatibility"]
+    F --> G{"9. Compatible?"}
+    
+    G -->|"Yes"| H["11. Configure Project<br/>(Name, Location)"]
+    G -->|"No - nvm installed"| I["Switch/Install Node Version"]
+    G -->|"No - nvm not installed"| J["Guide Installation"]
+    I --> H
+    J --> H
+    
+    H --> K["13. Select Template<br/>(Basic, Enterprise, PWA, etc.)"]
+    K --> L{"15. Library Selection"}
+    
+    L -->|"Interactive Search"| M["Search with autocomplete"]
+    L -->|"Manual Entry"| N["Enter package names"]
+    L -->|"Library Bundles"| O["Select predefined bundles"]
+    L -->|"Skip"| P["17. Additional Features"]
+    
+    M --> P
+    N --> P
+    O --> P
+    
+    P["17. Additional Features<br/>(Git, ESLint, Husky, Docs)"] --> Q{"19. Save Profile?"}
+    Q -->|"Yes"| R["Save configuration"]
+    Q -->|"No"| S["21. Confirm Configuration"]
+    R --> S
+    
+    S --> T["23. Create Angular Project"]
+    T --> U["25. Install Libraries"]
+    U --> V["27. Run npm install"]
+    V --> W["29. Create Project Structure"]
+    W --> X["31. Initialize Git"]
+    X --> Y["33. Generate Documentation"]
+    Y --> Z["35. Setup ESLint/Prettier"]
+    Z --> AA["37. Setup Husky"]
+    AA --> AB["39. Create Initial Commit"]
+    AB --> AC["41. Display Success & Next Steps"]
+    
+    style A fill:#e1f5fe
+    style AC fill:#c8e6c9
+    style C fill:#f3e5f5
+    style G fill:#ffebee
+    style L fill:#fff3e0
+    style Q fill:#f3e5f5
+    style S fill:#e8eaf6
 ```
 
 ## 🎨 Key Highlights

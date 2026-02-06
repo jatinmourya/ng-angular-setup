@@ -272,45 +272,54 @@ src/
 
 ## User Flow Diagram
 
-```
-Start CLI
-    ↓
-Display System Versions
-    ↓
-Fetch Angular Versions → Display Selection Menu
-    ↓
-User Selects Angular Version
-    ↓
-Check Node.js Compatibility
-    ↓
-  Compatible?
-    ├─ YES → Proceed to Project Setup
-    └─ NO → nvm Installed?
-              ├─ YES → Offer to Switch Node Version → Switch → Verify
-              └─ NO → Install nvm or Direct Node?
-                        ├─ nvm → Guide Installation → Wait → Retry Check
-                        └─ Node → Use winget install → Verify → Continue
-    ↓
-Select Installation Location (Current/New Directory)
-    ↓
-Configure Additional Options (Templates, Libraries, etc.)
-    ↓
-Interactive Library Search (Optional)
-    ├─ User types library name
-    ├─ Real-time npm search & validation
-    ├─ Display dropdown with results
-    ├─ User selects packages
-    └─ Add to installation queue
-    ↓
-Initialize Angular Project
-    ↓
-Install Selected Libraries/Dependencies
-    ↓
-Apply Configuration Presets
-    ↓
-Display Success Message + Next Steps
-    ↓
-End
+```mermaid
+flowchart TD
+    A["Start CLI"] --> B["Display System Versions"]
+    B --> C["Fetch Angular Versions"]
+    C --> D["Display Selection Menu"]
+    D --> E["User Selects Angular Version"]
+    E --> F["Check Node.js Compatibility"]
+    
+    F --> G{"Compatible?"}
+    G -->|"YES"| H["Proceed to Project Setup"]
+    G -->|"NO"| I{"nvm Installed?"}
+    
+    I -->|"YES"| J["Offer to Switch Node Version"]
+    J --> K["Switch Node Version"]
+    K --> L["Verify Switch"]
+    L --> H
+    
+    I -->|"NO"| M{"Install nvm or Direct Node?"}
+    M -->|"Install nvm"| N["Guide Installation"]
+    N --> O["Wait for Installation"]
+    O --> P["Retry Check"]
+    P --> F
+    
+    M -->|"Direct Node"| Q["Use winget install"]
+    Q --> R["Verify Installation"]
+    R --> H
+    
+    H --> S["Select Installation Location<br/>(Current/New Directory)"]
+    S --> T["Configure Additional Options<br/>(Templates, Libraries, etc.)"]
+    
+    T --> U["Interactive Library Search<br/>(Optional)"]
+    U --> V["User types library name"]
+    V --> W["Real-time npm search & validation"]
+    W --> X["Display dropdown with results"]
+    X --> Y["User selects packages"]
+    Y --> Z["Add to installation queue"]
+    
+    Z --> AA["Initialize Angular Project"]
+    AA --> AB["Install Selected Libraries/Dependencies"]
+    AB --> AC["Apply Configuration Presets"]
+    AC --> AD["Display Success Message + Next Steps"]
+    AD --> AE["End"]
+    
+    style A fill:#e1f5fe
+    style AE fill:#c8e6c9
+    style G fill:#fff3e0
+    style I fill:#ffebee
+    style M fill:#f3e5f5
 ```
 
 ---
