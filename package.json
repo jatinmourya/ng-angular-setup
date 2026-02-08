@@ -1,18 +1,19 @@
 {
   "name": "@jatinmourya/ng-init",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "A comprehensive CLI tool to automate Angular project initialization with intelligent version management and prerequisite handling",
   "type": "module",
-  "main": "dist/cli.js",
+  "main": "./dist/cli.js",
   "bin": {
     "ng-init": "./dist/cli.js"
   },
   "files": [
-    "dist/",
+    "dist",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
+    "lint": "eslint .",
     "build": "node build.js",
     "dev": "node build.js --watch",
     "clean": "rimraf dist",
@@ -21,24 +22,26 @@
   "keywords": [
     "angular",
     "cli",
+    "scaffold",
+    "generator",
     "automation",
-    "project-generator",
-    "scaffolding",
-    "interactive",
     "boilerplate",
     "template",
-    "development-tools"
+    "developer-tools"
   ],
-  "author": "jatinmourya",
+  "author": "Jatin Mourya <https://github.com/jatinmourya>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jatinmourya/ng-init.git"
+    "url": "git+https://github.com/jatinmourya/ng-init.git"
   },
   "bugs": {
     "url": "https://github.com/jatinmourya/ng-init/issues"
   },
   "homepage": "https://github.com/jatinmourya/ng-init#readme",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@inquirer/prompts": "^7.10.1",
     "axios": "^1.6.5",
@@ -49,14 +52,14 @@
     "ora": "^8.0.1",
     "semver": "^7.5.4"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "devDependencies": {
     "esbuild": "^0.27.2",
     "rimraf": "^6.1.2"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "exports": {
+    ".": "./dist/cli.js"
   }
 }
