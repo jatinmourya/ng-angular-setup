@@ -20,10 +20,17 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
 export async function runCli() {
     try {
         // Display welcome banner
-        console.log(chalk.bold.cyan('\n╔════════════════════════════════════════════════╗'));
-        console.log(chalk.bold.cyan(`║   Angular Project Automation CLI v${packageJson.version.padEnd(13)}║`));
-        console.log(chalk.bold.cyan('╚════════════════════════════════════════════════╝\n'));
+        const text = `Angular Project Initialization Automation CLI v${packageJson.version}`;
+        const width = 60;
 
+        const line = "═".repeat(width);
+        const space = width - text.length;
+
+        console.log(chalk.cyan.bold(`
+╔${line}╗
+║${" ".repeat(space / 2)}${text}${" ".repeat(Math.ceil(space / 2))}║
+╚${line}╝
+`));
         // Step 1: Display system versions
         const systemVersions = await displaySystemVersions();
 
@@ -34,10 +41,10 @@ export async function runCli() {
         });
 
         let config = {};
-        
+
         if (useProfile) {
             const profiles = await listProfiles();
-            
+
             if (profiles.length === 0) {
                 console.log(chalk.yellow('No saved profiles found. Continuing with manual setup...\n'));
             } else {
@@ -48,7 +55,7 @@ export async function runCli() {
 
                 const profile = await loadProfile(selectedProfile);
                 displayProfileInfo(selectedProfile, profile);
-                
+
                 const confirmProfile = await confirm({
                     message: 'Use this profile?',
                     default: true
@@ -76,9 +83,9 @@ export async function runCli() {
                 const label = `Angular ${major}`;
                 // Check if this major version contains the latest
                 const isLatest = angularVersions.latest && angularVersions.latest.startsWith(`${major}.`);
-                return { 
-                    name: isLatest ? `${label} (latest)` : label, 
-                    value: major 
+                return {
+                    name: isLatest ? `${label} (latest)` : label,
+                    value: major
                 };
             });
 
@@ -142,7 +149,7 @@ export async function runCli() {
 
                 if (compatibleInstalled.length > 0) {
                     console.log(chalk.green(`Found ${compatibleInstalled.length} compatible Node version(s) installed:\n`));
-                    
+
                     const selectedVersion = await select({
                         message: 'Select Node version to switch to:',
                         choices: compatibleInstalled.map(v => ({ name: `v${v}`, value: v }))
@@ -168,7 +175,7 @@ export async function runCli() {
 
                     if (shouldInstall) {
                         const installed = await installNodeVersion(recommendedVersion);
-                        
+
                         if (!installed) {
                             console.log(chalk.red('Failed to install Node version.'));
                             process.exit(1);
@@ -204,7 +211,7 @@ export async function runCli() {
                     }
 
                     const installed = await installNodeWithWinget('LTS');
-                    
+
                     if (!installed) {
                         console.log(chalk.red('Failed to install Node.js. Please install manually.'));
                         process.exit(1);
@@ -339,7 +346,7 @@ export async function runCli() {
                 }));
                 config.libraries.push(...templateLibs);
             }
-            
+
             // Add template-specific dev packages
             if (config.template !== 'custom' && PROJECT_TEMPLATES[config.template].devPackages) {
                 const templateDevLibs = PROJECT_TEMPLATES[config.template].devPackages.map(name => ({
@@ -420,10 +427,10 @@ export async function runCli() {
         // Step 14: Install libraries
         if (config.libraries.length > 0) {
             console.log(chalk.bold.cyan('\n📦 Resolving library versions...\n'));
-            
+
             // Resolve library versions dynamically for compatibility with Angular version
             const resolvedLibraries = await resolveLibraryVersionsAsync(config.libraries, config.angularVersion);
-            
+
             // Show adjusted versions if any
             const adjusted = resolvedLibraries.filter(lib => lib.adjusted);
             if (adjusted.length > 0) {
@@ -436,7 +443,7 @@ export async function runCli() {
                 });
                 console.log('');
             }
-            
+
             // Show warnings for potentially incompatible libraries
             const warnings = resolvedLibraries.filter(lib => lib.warning);
             if (warnings.length > 0) {
@@ -449,24 +456,24 @@ export async function runCli() {
                 });
                 console.log('');
             }
-            
+
             // Separate production and dev packages
             const prodLibraries = resolvedLibraries.filter(lib => !lib.isDev);
             const devLibraries = resolvedLibraries.filter(lib => lib.isDev);
-            
+
             // Install production packages
             if (prodLibraries.length > 0) {
                 console.log(chalk.bold.cyan('📦 Installing production libraries...\n'));
-                const prodSpecs = prodLibraries.map(lib => 
+                const prodSpecs = prodLibraries.map(lib =>
                     lib.version === 'latest' ? lib.name : `${lib.name}@${lib.version}`
                 );
                 await installPackages(prodSpecs, projectPath);
             }
-            
+
             // Install dev packages
             if (devLibraries.length > 0) {
                 console.log(chalk.bold.cyan('📦 Installing dev libraries...\n'));
-                const devSpecs = devLibraries.map(lib => 
+                const devSpecs = devLibraries.map(lib =>
                     lib.version === 'latest' ? lib.name : `${lib.name}@${lib.version}`
                 );
                 await installPackages(devSpecs, projectPath, true);
@@ -532,7 +539,7 @@ export async function runCli() {
         console.log(chalk.white('2. ') + chalk.cyan('ng serve'));
         console.log(chalk.white('3. ') + chalk.cyan('Open http://localhost:4200 in your browser'));
         console.log(chalk.gray('━'.repeat(50)));
-        
+
         console.log(chalk.bold.cyan('\n💡 Useful Commands:\n'));
         console.log(chalk.gray('  ng generate component <name>    ') + chalk.white('Create a component'));
         console.log(chalk.gray('  ng generate service <name>      ') + chalk.white('Create a service'));
