@@ -1,7 +1,7 @@
 {
   "name": "@jatinmourya/ng-init",
   "version": "1.2.6",
-  "main": "dist/index.js",
+  "main": "dist/cli.js",
   "description": "A comprehensive CLI tool to automate Angular project initialization with intelligent version management and prerequisite handling",
   "files": [
     "dist/",
@@ -9,16 +9,18 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "build": "node build.js",
-    "prepublishOnly": "npm run build && npm run check-size",
-    "check-size": "npm pack --dry-run",
-    "check-contents": "npm pack && tar -tzf *.tgz && rm *.tgz"
+    "build:dev": "node build.js --watch",
+    "build:prod": "node build.js",
+    "dev": "node build.js --watch",
+    "watch": "npm run dev",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean"
   },
   "type": "module",
   "bin": {
-    "ng-init": "./dist/index.js"
+    "ng-init": "./dist/cli.js"
   },
   "keywords": [
     "angular",
@@ -61,7 +63,10 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "esbuild": "^0.27.2"
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.27.2",
+    "rimraf": "^6.1.2",
+    "shx": "^0.4.0"
   },
   "publishConfig": {
     "access": "public"

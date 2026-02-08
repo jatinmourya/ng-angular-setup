@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { Command } from 'commander';
 import { runCli } from './runner.js';
 import { listProfiles, loadProfile, deleteProfile, displayProfileInfo, exportProfile, importProfile } from './utils/profile-manager.js';
