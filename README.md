@@ -1,4 +1,4 @@
-# Angular Project Automator 🚀
+# Angular Project initialization Automator 🚀
 
 A comprehensive command-line interface (CLI) tool designed to automate and streamline the initialization of Angular projects with intelligent version management, interactive library search, and comprehensive prerequisite handling.
 

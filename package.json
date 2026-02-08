@@ -1,42 +1,32 @@
 {
   "name": "@jatinmourya/ng-init",
   "version": "1.2.6",
-  "main": "dist/cli.js",
   "description": "A comprehensive CLI tool to automate Angular project initialization with intelligent version management and prerequisite handling",
+  "type": "module",
+  "main": "dist/cli.js",
+  "bin": {
+    "ng-init": "./dist/cli.js"
+  },
   "files": [
     "dist/",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "start": "node src/index.js",
     "build": "node build.js",
-    "build:dev": "node build.js --watch",
-    "build:prod": "node build.js",
     "dev": "node build.js --watch",
-    "watch": "npm run dev",
     "clean": "rimraf dist",
-    "prebuild": "npm run clean"
-  },
-  "type": "module",
-  "bin": {
-    "ng-init": "./dist/cli.js"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "angular",
     "cli",
     "automation",
     "project-generator",
-    "angular-cli",
     "scaffolding",
-    "nvm",
-    "node-version",
-    "npm",
     "interactive",
-    "project-setup",
     "boilerplate",
     "template",
-    "angular-project",
     "development-tools"
   ],
   "author": "jatinmourya",
@@ -63,10 +53,8 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "cross-env": "^10.1.0",
     "esbuild": "^0.27.2",
-    "rimraf": "^6.1.2",
-    "shx": "^0.4.0"
+    "rimraf": "^6.1.2"
   },
   "publishConfig": {
     "access": "public"
